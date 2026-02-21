@@ -714,7 +714,7 @@ export default function ContactForm({
               Sending...
             </span>
           ) : (
-            "Get My Free Consultation"
+            "Send Message"
           )}
         </Button>
         <p className="mt-3 text-center text-sm text-gray-500 dark:text-gray-400">

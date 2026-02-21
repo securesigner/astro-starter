@@ -137,7 +137,7 @@ describe('ContactForm', () => {
     it('should render submit button', () => {
       render(<ContactForm />);
 
-      expect(screen.getByRole('button', { name: /free consultation|submit/i })).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: /send message|submit/i })).toBeInTheDocument();
     });
 
     it('should render service dropdown as optional', () => {
@@ -173,7 +173,7 @@ describe('ContactForm', () => {
       render(<ContactForm />);
 
       // Form is empty, clicking submit should not call fetch
-      const submitButton = screen.getByRole('button', { name: /free consultation|submit/i });
+      const submitButton = screen.getByRole('button', { name: /send message|submit/i });
       await user.click(submitButton);
 
       // fetch should not be called since form is invalid
@@ -234,7 +234,7 @@ describe('ContactForm', () => {
       const user = userEvent.setup();
       render(<ContactForm />);
 
-      const submitButton = screen.getByRole('button', { name: /free consultation|submit/i });
+      const submitButton = screen.getByRole('button', { name: /send message|submit/i });
       await user.click(submitButton);
 
       // fetch should not be called
@@ -255,7 +255,7 @@ describe('ContactForm', () => {
         'This is a valid test message with more than twenty characters.'
       );
 
-      const submitButton = screen.getByRole('button', { name: /free consultation|submit/i });
+      const submitButton = screen.getByRole('button', { name: /send message|submit/i });
       await user.click(submitButton);
 
       await waitFor(() => {

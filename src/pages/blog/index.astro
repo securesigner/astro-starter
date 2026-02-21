@@ -5,7 +5,7 @@
  * Lists all published blog posts sorted by date descending.
  * Features:
  * - Paginated blog post listing
- * - Category filtering (future enhancement)
+ * - Client-side category filtering
  * - Featured post highlighting
  * - Glass morphism card styling
  * - SEO optimized with structured data
@@ -21,11 +21,11 @@ import BlogCard from '../../components/BlogCard.astro';
 import PageBackground from '../../components/PageBackground.astro';
 import SectionConnector from '../../components/SectionConnector.astro';
 import AnimatedSection from '../../components/AnimatedSection.astro';
-import { Badge } from '../../components/ui/badge';
 
 // Page metadata
 const pageTitle = 'Blog';
-const pageDescription = 'Practical guides for small businesses dealing with messy data, broken spreadsheets, and workflows that waste your time. No fluff, just fixes.';
+// CUSTOMIZE: Update this description to match your blog's focus
+const pageDescription = 'Practical guides and insights on building better websites, improving performance, and growing your business online. No fluff, just actionable advice.';
 
 // Fetch all blog posts, filter drafts, and sort by date
 const allPosts = await getCollection('blog', ({ data }) => {
@@ -98,22 +98,35 @@ const allCategories = [...new Set(sortedPosts.flatMap(post => post.data.categori
         </AnimatedSection>
 
         <AnimatedSection animation="fade-up" delay={200} duration={600}>
+          <!-- CUSTOMIZE: Update this description to match your blog's focus -->
           <p class="text-lg md:text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto mb-8">
-            Practical guides for anyone dealing with messy data, broken workflows, or spreadsheets that got out of control.
+            Practical guides and insights to help you build better websites, improve performance, and grow your business online.
           </p>
         </AnimatedSection>
 
-        <!-- Category filter pills (visual, future enhancement) -->
+        <!-- Category filter pills -->
         {allCategories.length > 0 && (
           <AnimatedSection animation="fade-up" delay={300} duration={600}>
-            <div class="flex flex-wrap justify-center gap-2 mt-8">
-              <Badge variant="default" size="lg" shape="pill">
+            <div id="category-filters" class="flex flex-wrap justify-center gap-2 mt-8" role="tablist" aria-label="Filter posts by category">
+              <button
+                type="button"
+                role="tab"
+                aria-selected="true"
+                data-category="all"
+                class="category-pill category-pill--active"
+              >
                 All Posts
-              </Badge>
+              </button>
               {allCategories.slice(0, 6).map((category) => (
-                <Badge variant="outline" size="lg" shape="pill" className="hover:bg-accent-primary/20 hover:text-accent-primary-light cursor-pointer">
+                <button
+                  type="button"
+                  role="tab"
+                  aria-selected="false"
+                  data-category={category}
+                  class="category-pill"
+                >
                   {category}
-                </Badge>
+                </button>
               ))}
             </div>
           </AnimatedSection>
@@ -129,14 +142,15 @@ const allCategories = [...new Set(sortedPosts.flatMap(post => post.data.categori
       <div class="container mx-auto px-4 md:px-6 max-w-6xl">
 
         <!-- Posts count -->
-        <p class="text-gray-500 dark:text-gray-400 font-mono text-sm mb-8">
+        <p id="posts-count" class="text-gray-500 dark:text-gray-400 font-mono text-sm mb-8">
           {sortedPosts.length} articles
         </p>
 
         <!-- Post Grid -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div id="posts-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {sortedPosts.map((post, index) => (
             <AnimatedSection animation="fade-up" delay={index < 6 ? index * 50 : 0} duration={500}>
+              <div data-categories={JSON.stringify(post.data.categories || [])} class="blog-card-wrapper">
               <BlogCard
                 title={post.data.title}
                 slug={post.slug}
@@ -148,6 +162,7 @@ const allCategories = [...new Set(sortedPosts.flatMap(post => post.data.categori
                 image={post.data.image}
                 featured={index === 0}
               />
+              </div>
             </AnimatedSection>
           ))}
         </div>
@@ -166,11 +181,120 @@ const allCategories = [...new Set(sortedPosts.flatMap(post => post.data.categori
 
     <!-- CTA Section -->
     <CTASection
-      headline="Drowning in spreadsheets?"
-      description="We help small businesses make sense of their data. Tell us what's frustrating you."
-      primaryText="Get My Free Assessment"
+    headline="Ready to start your project?"
+    description="Tell us what you're working on and we'll see how we can help."
+    primaryText="Get Started"
       primaryUrl="/contact/"
     />
   </main>
   </PageBackground>
 </Layout>
+
+<style>
+  /* Category filter pill styles */
+  .category-pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.75rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    border-radius: 9999px;
+    border: 1px solid var(--color-glass-border);
+    background: transparent;
+    color: var(--color-fg);
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  .category-pill:hover {
+    background: var(--color-accent-primary-20, rgba(16, 185, 129, 0.2));
+    color: var(--color-accent-primary);
+  }
+  .category-pill--active {
+    border-color: transparent;
+    background: var(--color-accent-tertiary);
+    color: white;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  }
+  .category-pill--active:hover {
+    background: var(--color-accent-tertiary);
+    color: white;
+    opacity: 0.9;
+  }
+  /* Hidden state for filtered-out cards */
+  .blog-card-wrapper.hidden {
+    display: none;
+  }
+</style>
+
+<script>
+  /**
+   * Client-side blog category filtering
+   * Filters blog cards by category when filter pills are clicked.
+   */
+  function initCategoryFilter() {
+    const filtersContainer = document.getElementById('category-filters');
+    const postsGrid = document.getElementById('posts-grid');
+    const postsCount = document.getElementById('posts-count');
+
+    if (!filtersContainer || !postsGrid) return;
+
+    const pills = filtersContainer.querySelectorAll<HTMLButtonElement>('.category-pill');
+    const cards = postsGrid.querySelectorAll<HTMLElement>('.blog-card-wrapper');
+    const totalPosts = cards.length;
+
+    function filterByCategory(category: string) {
+      let visibleCount = 0;
+
+      cards.forEach((card) => {
+        const cardCategories: string[] = JSON.parse(card.dataset.categories || '[]');
+        const isVisible = category === 'all' || cardCategories.includes(category);
+
+        card.classList.toggle('hidden', !isVisible);
+        if (isVisible) visibleCount++;
+      });
+
+      // Update the article count
+      if (postsCount) {
+        postsCount.textContent = category === 'all'
+          ? `${totalPosts} articles`
+          : `${visibleCount} of ${totalPosts} articles`;
+      }
+
+      // Update active pill state
+      pills.forEach((pill) => {
+        const isActive = pill.dataset.category === category;
+        pill.classList.toggle('category-pill--active', isActive);
+        pill.setAttribute('aria-selected', String(isActive));
+      });
+
+      // Update URL hash (without scrolling)
+      if (category === 'all') {
+        history.replaceState(null, '', window.location.pathname);
+      } else {
+        history.replaceState(null, '', `#${encodeURIComponent(category)}`);
+      }
+    }
+
+    // Add click handlers
+    pills.forEach((pill) => {
+      pill.addEventListener('click', () => {
+        const category = pill.dataset.category || 'all';
+        filterByCategory(category);
+      });
+    });
+
+    // Apply filter from URL hash on load
+    const hash = decodeURIComponent(window.location.hash.slice(1));
+    if (hash && hash !== 'all') {
+      // Verify the hash matches an actual category
+      const matchingPill = Array.from(pills).find((p) => p.dataset.category === hash);
+      if (matchingPill) {
+        filterByCategory(hash);
+      }
+    }
+  }
+
+  // Run on initial load and after View Transitions navigation
+  initCategoryFilter();
+  document.addEventListener('astro:after-swap', initCategoryFilter);
+</script>

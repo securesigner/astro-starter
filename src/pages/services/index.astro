@@ -23,7 +23,8 @@ import { ArrowRight, CheckCircle } from 'lucide-react';
 
 // Page metadata
 const pageTitle = 'Services';
-const pageDescription = 'Practical help for small businesses dealing with messy data, manual busywork, and systems that don\'t talk to each other. We get your data in order and your workflows running smoothly.';
+// CUSTOMIZE: Update this description to match your services
+const pageDescription = 'Professional services to help your business grow. From web design to consulting and ongoing support, we deliver solutions that make a real difference.';
 
 // Fetch all services, filter drafts
 const allServices = await getCollection('services', ({ data }) => {
@@ -32,10 +33,11 @@ const allServices = await getCollection('services', ({ data }) => {
 });
 
 // Custom sort order
+// CUSTOMIZE: Set the display order of your services
 const serviceOrder: Record<string, number> = {
-  'data-cleanup': 1,
-  'automatic-business-reporting': 2,
-  'workflow-automation': 3,
+  'web-design': 1,
+  'consulting': 2,
+  'support': 3,
 };
 
 const sortedServices = allServices.sort((a, b) => {
@@ -95,8 +97,9 @@ const sortedServices = allServices.sort((a, b) => {
         <h1 class="text-4xl font-bold tracking-tight text-gray-900 dark:text-gray-100 sm:text-5xl lg:text-6xl relative z-10">
           How We <span class="bg-linear-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">Help</span>
         </h1>
+        <!-- CUSTOMIZE: Update this description to match your services -->
         <p class="mt-6 text-lg text-gray-600 dark:text-gray-400 max-w-3xl mx-auto relative z-10">
-          Messy spreadsheets? Data scattered everywhere? Spending hours on tasks that should be automatic? Here's how we help small businesses like yours fix exactly those problems.
+          Struggling with an outdated website? Need expert guidance on your next project? We help businesses like yours build a stronger digital presence and work more efficiently.
         </p>
       </AnimatedSection>
 
@@ -160,8 +163,8 @@ const sortedServices = allServices.sort((a, b) => {
   <!-- CTA Section -->
   <CTASection
     headline="Not sure where to start?"
-    description="That's totally normal. Tell us what's frustrating you and we'll point you in the right direction—no sales pitch, just a straight answer."
-    primaryText="Get My Free Assessment"
+    description="That's totally normal. Tell us what you're working on and we'll point you in the right direction—no pressure, just a straight answer."
+    primaryText="Get Started"
     primaryUrl="/contact/"
   />
 

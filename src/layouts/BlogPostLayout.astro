@@ -173,7 +173,7 @@ const breadcrumbSchema = {
   <!-- Schema.org Article Structured Data
        The @type field is driven by schema_type (default: "BlogPosting").
        Setting schema_type to "HowTo" in frontmatter changes the JSON-LD @type accordingly.
-       TODO: When HowTo posts are published, add step/tool/supply fields to the blog
+       EXTEND: To support HowTo schema, add step/tool/supply fields to the blog
        schema in content.config.ts and include them in the JSON-LD output below. -->
   <Fragment slot="head">
     <script is:inline type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />
@@ -194,7 +194,7 @@ const breadcrumbSchema = {
         "url": siteUrl,
         "logo": {
           "@type": "ImageObject",
-          "url": `${siteUrl}/assets/images/logo.svg`
+          "url": `${siteUrl}/assets/images/logo.png`
         }
       },
       "description": metaDescription,
@@ -358,7 +358,7 @@ const breadcrumbSchema = {
               href="/contact/"
               class="inline-flex items-center text-sm font-medium text-emerald-700 dark:text-emerald-400 hover:text-emerald-800 dark:hover:text-emerald-300 transition-colors"
             >
-              Get my free assessment
+              Get started
               <svg class="w-4 h-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
               </svg>
@@ -478,7 +478,7 @@ const breadcrumbSchema = {
   <CTASection
     headline="Need help putting this into practice?"
     description="Tell us what you're working on and we'll see how we can help."
-    primaryText="Get My Free Assessment"
+    primaryText="Get Started"
     primaryUrl="/contact/"
   />
   </PageBackground>

@@ -6,7 +6,7 @@
  * Uses shadcn/ui Card components and Lucide icons.
  *
  * Features:
- * - Asymmetric 3-column grid with featured large card (Data Cleanup)
+ * - Asymmetric 3-column grid with featured large card
  * - Bento-box style with varying card sizes
  * - White card styling with subtle borders and shadows
  * - Lucide outline icons for visual interest
@@ -38,7 +38,7 @@ const iconMap: Record<string, typeof Palette> = {
   'support': LifeBuoy,
 };
 
-// Featured service is first (Data Cleanup)
+// Featured service is first
 const featuredService = services[0];
 const otherServices = services.slice(1);
 ---
@@ -59,7 +59,7 @@ const otherServices = services.slice(1);
 
     <!-- Bento-Box Asymmetric Grid -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-6">
-      <!-- Featured Card: Data Cleanup (spans 2 cols, 2 rows on md+) -->
+      <!-- Featured Card (spans 2 cols, 2 rows on md+) -->
       {(() => {
         const IconComponent = iconMap[featuredService.icon] || Palette;
         const serviceUrl = featuredService.slug ? `/services/${featuredService.slug}/` : '#';

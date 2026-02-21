@@ -15,78 +15,62 @@ import PageBackground from "@/components/PageBackground.astro";
 import AnimatedSection from "@/components/AnimatedSection.astro";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import {
-  Stethoscope,
-  FileSearch,
-  Sparkles,
-  Link2,
-  LayoutDashboard,
-  ArrowRightLeft,
+  Palette,
+  Code,
+  Rocket,
+  Headphones,
   Clock,
   Target,
 } from "lucide-react";
 
-// Page metadata
-const title = "Custom Pricing";
+// CUSTOMIZE: Update the page title and description
+const title = "Pricing";
 const description =
-  "Every business is different. We scope projects based on your unique data challenges and goals—no cookie-cutter packages.";
+  "Every project is different. We scope work based on your unique goals and requirements—no cookie-cutter packages.";
 
-// Package data with icons (no prices)
+// CUSTOMIZE: Update packages to match your services and pricing model
 const packages = [
   {
-    name: "Data Health Check",
-    description: "Audit of your key spreadsheet with written recommendations and a 30-minute debrief to prioritize next steps.",
-    outcome: "Clear picture of what needs fixing",
-    icon: Stethoscope,
+    name: "Starter",
+    description: "A clean, modern website built on a proven template. Perfect for new businesses that need a professional web presence fast.",
+    outcome: "Live website in as little as two weeks",
+    icon: Palette,
     featured: false,
   },
   {
-    name: "Spreadsheet Review",
-    description: "Full review of up to 5 connected spreadsheets. We identify errors, inconsistencies, and deliver a documented fix plan.",
-    outcome: "Know exactly where the problems are",
-    icon: FileSearch,
-    featured: false,
-  },
-  {
-    name: "Data Cleanup Sprint",
-    description: "One-week intensive: duplicate removal, format standardization, validation rules, and before/after documentation.",
-    outcome: "Clean files you can trust",
-    icon: Sparkles,
+    name: "Professional",
+    description: "Custom design and development with SEO optimization, performance tuning, analytics integration, and a content strategy session.",
+    outcome: "A site that looks great and works hard for your business",
+    icon: Code,
     featured: true,
   },
   {
-    name: "System Integration",
-    description: "Connect 2–3 tools (CRM, accounting, forms) with automated data flow, error handling, and training.",
-    outcome: "No more copy-pasting between systems",
-    icon: Link2,
+    name: "Growth",
+    description: "Full website build plus ongoing consulting: conversion optimization, content updates, A/B testing, and monthly performance reports.",
+    outcome: "Continuous improvement, measurable results",
+    icon: Rocket,
     featured: false,
   },
   {
-    name: "Dashboard Build",
-    description: "Custom metrics dashboard in Google Sheets or Airtable with training so your team can maintain it.",
-    outcome: "Your key numbers in one view",
-    icon: LayoutDashboard,
-    featured: false,
-  },
-  {
-    name: "Full Data Migration",
-    description: "End-to-end data cleanup, new system setup, comprehensive documentation, and hands-on training.",
-    outcome: "Everything organized, documented, and working",
-    icon: ArrowRightLeft,
+    name: "Ongoing Support",
+    description: "Monthly retainer for updates, maintenance, security patches, and priority support whenever you need it.",
+    outcome: "Peace of mind—your site is always in good hands",
+    icon: Headphones,
     featured: false,
   },
 ];
 
-// Simplified FAQ data
+// CUSTOMIZE: Update FAQ content to match your business
 const faqs = [
   {
     question: "How does pricing work?",
     answer:
-      "Every project is scoped individually based on your situation. After a discovery call, you'll receive a clear quote with no surprises.",
+      "Every project is scoped individually based on your requirements. After a discovery call, you'll receive a clear proposal with no surprises.",
   },
   {
     question: "What's the typical timeline?",
     answer:
-      "Quick audits take a few days. Data cleanup sprints run about a week. Larger migrations and integrations typically span a few weeks depending on scope.",
+      "Starter sites launch in about two weeks. Professional builds usually take 4–6 weeks. Larger projects with custom features can take 8–12 weeks depending on scope.",
   },
   {
     question: "What if I'm not sure what I need?",
@@ -137,11 +121,12 @@ const otherPackages = packages.filter((p) => !p.featured);
               Investment & Pricing
             </p>
             <h1 class="text-4xl sm:text-5xl lg:text-6xl font-serif font-semibold text-gray-900 dark:text-gray-100 leading-tight mb-6">
-              Custom Solutions,<br />
-              <span class="text-emerald-600 dark:text-emerald-400">Fair Pricing</span>
+              Transparent Pricing,<br />
+              <span class="text-emerald-600 dark:text-emerald-400">Custom Solutions</span>
             </h1>
             <p class="text-lg sm:text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto leading-relaxed">
-              Every business has unique data challenges. We scope each project individually so you pay for exactly what you need—nothing more.
+              <!-- CUSTOMIZE: Update this text to match your pricing approach -->
+              Every project has unique requirements. We scope each engagement individually so you get exactly what you need—nothing more, nothing less.
             </p>
           </AnimatedSection>
         </div>
@@ -179,10 +164,10 @@ const otherPackages = packages.filter((p) => !p.featured);
                 </CardHeader>
                 <CardContent className="p-0">
                   <p class="text-gray-600 dark:text-gray-400 leading-relaxed">
-                    For exploratory work, quick fixes, or projects where scope is hard to define upfront. Billed in 15-minute increments with no surprises.
+                    For exploratory work, quick fixes, or projects where scope is hard to define upfront. Billed in transparent increments with no surprises.
                   </p>
                   <p class="text-sm text-gray-500 dark:text-gray-400 mt-4 italic">
-                    Typical uses: Data audits, troubleshooting, training sessions.
+                    Typical uses: Website updates, troubleshooting, consulting sessions.
                   </p>
                 </CardContent>
               </Card>
@@ -205,7 +190,7 @@ const otherPackages = packages.filter((p) => !p.featured);
                     For defined deliverables with clear outcomes. Price is set upfront after a discovery call—you know exactly what you're paying before work begins.
                   </p>
                   <p class="text-sm text-gray-500 dark:text-gray-400 mt-4 italic">
-                    Typical uses: Spreadsheet cleanup, file organization, dashboard builds.
+                    Typical uses: Website builds, redesigns, custom feature development.
                   </p>
                 </CardContent>
               </Card>
@@ -233,7 +218,7 @@ const otherPackages = packages.filter((p) => !p.featured);
 
           <!-- Bento Grid -->
           <div class="grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-6">
-            <!-- Featured Card: Data Cleanup Sprint (spans 2 cols, 2 rows) -->
+            <!-- Featured Card (spans 2 cols, 2 rows) -->
             {featuredPackage && (() => {
               const IconComponent = featuredPackage.icon;
               return (
@@ -346,7 +331,7 @@ const otherPackages = packages.filter((p) => !p.featured);
             title="Get Custom Pricing"
             size="lg"
             align="center"
-            subtitle="Tell us about your data challenges and we'll put together a proposal that fits your budget and timeline."
+            subtitle="Tell us about your project and we'll put together a proposal that fits your goals and budget."
             class="mb-12"
           />
           <div class="max-w-2xl mx-auto">
@@ -360,8 +345,8 @@ const otherPackages = packages.filter((p) => !p.featured);
       ================================================================= -->
       <CTASection
         headline="Not sure where to start?"
-        description="A quick call helps us understand your situation and point you in the right direction—no charge, no commitment."
-        primaryText="Get My Free Assessment"
+        description="A quick call helps us understand your goals and recommend the right approach—no charge, no commitment."
+        primaryText="Get Started"
         primaryUrl="/contact/"
       />
     </main>
