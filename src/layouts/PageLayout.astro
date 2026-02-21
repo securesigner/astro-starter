@@ -1,0 +1,444 @@
+---
+/**
+ * Page Layout
+ * ===========================================
+ * Layout for static content pages (About, Contact, Privacy, etc.)
+ * Extends the base Layout and provides:
+ * - Page header with title and optional subtitle/description
+ * - Glass card styling for content area
+ * - Optional hero image with gradient overlay
+ * - Optional breadcrumb navigation
+ * - Optional table of contents sidebar
+ * - Layout width variants (narrow, normal, wide)
+ * - Schema.org structured data
+ *
+ * Migrated from: _layouts/page.html
+ *
+ * Usage:
+ *   <PageLayout
+ *     title="About Us"
+ *     description="Learn more about our mission"
+ *     layoutWidth="normal"
+ *   >
+ *     <content-here />
+ *   </PageLayout>
+ *
+ * Props:
+ *   - title: Page title (required)
+ *   - description: Subtitle/description shown in header
+ *   - heroImage: Path to hero image (optional)
+ *   - heroAlt: Alt text for hero image
+ *   - showBreadcrumbs: Boolean to show breadcrumb navigation
+ *   - showToc: Boolean to show table of contents sidebar
+ *   - layoutWidth: 'narrow' | 'normal' | 'wide' (default: 'normal')
+ *   - schemaType: Schema.org type (default: 'WebPage')
+ *   - noindex: Boolean to prevent search indexing
+ */
+
+import Layout from "./Layout.astro";
+import { Image } from 'astro:assets';
+import PageBackground from "@/components/PageBackground.astro";
+import { SITE } from '@/data/site';
+
+// Props interface
+interface Props {
+  title: string;
+  description?: string;
+  heroImage?: string;
+  heroAlt?: string;
+  showBreadcrumbs?: boolean;
+  showToc?: boolean;
+  layoutWidth?: "narrow" | "normal" | "wide";
+  schemaType?: string;
+  noindex?: boolean;
+  /** Wrap page content with warm-to-cool gradient background */
+  useBackground?: boolean;
+}
+
+const {
+  title,
+  description,
+  heroImage,
+  heroAlt,
+  showBreadcrumbs = false,
+  showToc = false,
+  layoutWidth = "normal",
+  schemaType = "WebPage",
+  noindex = false,
+  useBackground = false,
+} = Astro.props;
+
+// Wrapper component based on useBackground prop
+const ContentWrapper = useBackground ? PageBackground : Fragment;
+
+// Determine layout width class
+const widthClasses: Record<string, string> = {
+  narrow: "max-w-3xl mx-auto px-6 md:px-8",
+  normal: "max-w-4xl mx-auto px-6 md:px-8",
+  wide: "max-w-6xl mx-auto px-6 md:px-8",
+};
+const widthClass = widthClasses[layoutWidth];
+
+// Check if we have a sidebar (TOC)
+const hasSidebar = showToc;
+
+// BreadcrumbList Schema for SEO
+const siteUrl = SITE.url;
+const currentUrl = new URL(Astro.url.pathname, Astro.site || siteUrl).href;
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": siteUrl
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": title,
+      "item": currentUrl
+    }
+  ]
+};
+---
+
+<Layout
+  title={title}
+  description={description}
+  noindex={noindex}
+>
+  {/* Schema.org BreadcrumbList structured data + any additional head content from child pages */}
+  <Fragment slot="head">
+    <script
+      is:inline
+      type="application/ld+json"
+      set:html={JSON.stringify(breadcrumbSchema)}
+    />
+    <slot name="head" />
+  </Fragment>
+  <ContentWrapper>
+  <article
+    class="page-layout pb-16"
+    itemscope
+    itemtype={`https://schema.org/${schemaType}`}
+  >
+    <!-- =========================================================
+      HERO IMAGE (Optional)
+    ========================================================= -->
+    {heroImage && (
+        <div class="relative w-full h-[300px] md:h-[400px] overflow-hidden mb-8">
+          <Image
+            src={heroImage}
+            alt={heroAlt || title}
+            width={1920}
+            height={800}
+            format="webp"
+            class="w-full h-full object-cover object-center"
+            loading="eager"
+            decoding="sync"
+            fetchpriority="high"
+          />
+          <div class="absolute inset-0 bg-linear-to-b from-transparent via-white/40 to-white/90 dark:via-gray-950/40 dark:to-gray-950/90" />
+        </div>
+    )}
+
+    <!-- =========================================================
+      PAGE HEADER
+    ========================================================= -->
+    <header
+      class:list={[
+        "py-10 pb-8 text-center",
+        heroImage && "-mt-16 relative z-10",
+      ]}
+    >
+      <div class={widthClass}>
+        <!-- Breadcrumbs (Optional) -->
+        {
+          showBreadcrumbs && (
+            <nav class="mb-4" aria-label="Breadcrumb">
+              <ol
+                class="flex flex-wrap items-center justify-center gap-2 list-none m-0 p-0 font-mono text-sm"
+                itemscope
+                itemtype="https://schema.org/BreadcrumbList"
+              >
+                <li
+                  class="flex items-center gap-2 after:content-['/'] after:text-gray-400"
+                  itemprop="itemListElement"
+                  itemscope
+                  itemtype="https://schema.org/ListItem"
+                >
+                  <a
+                    href="/"
+                    itemprop="item"
+                    class="text-emerald-600 dark:text-emerald-400 hover:text-emerald-800 dark:hover:text-emerald-300 transition-colors no-underline hover:underline"
+                  >
+                    <span itemprop="name">Home</span>
+                  </a>
+                  <meta itemprop="position" content="1" />
+                </li>
+                <li
+                  class="flex items-center gap-2 text-gray-500 dark:text-gray-400"
+                  itemprop="itemListElement"
+                  itemscope
+                  itemtype="https://schema.org/ListItem"
+                  aria-current="page"
+                >
+                  <span itemprop="name">{title}</span>
+                  <meta itemprop="position" content="2" />
+                </li>
+              </ol>
+            </nav>
+          )
+        }
+
+        <!-- Page Title -->
+        <h1
+          class="font-sans text-4xl md:text-5xl font-extrabold leading-tight text-gray-900 dark:text-gray-100 tracking-tight mb-4 text-balance"
+          itemprop="name headline"
+        >
+          {title}
+        </h1>
+
+        <!-- Description / Subtitle -->
+        {
+          description && (
+            <p
+              class="text-lg md:text-xl text-gray-600 dark:text-gray-400 leading-relaxed max-w-[65ch] mx-auto text-balance"
+              itemprop="description"
+            >
+              {description}
+            </p>
+          )
+        }
+
+      </div>
+    </header>
+
+    <!-- =========================================================
+      MAIN CONTENT AREA
+    ========================================================= -->
+    <div class="py-8">
+      <div
+        class:list={[
+          widthClass,
+          hasSidebar && "grid grid-cols-1 lg:grid-cols-[240px_1fr] gap-8",
+        ]}
+      >
+        <!-- TABLE OF CONTENTS (Optional Sidebar) -->
+        {
+          hasSidebar && (
+            <aside
+              class="order-2 lg:order-1 lg:sticky lg:top-24 lg:h-fit lg:max-h-[calc(100vh-8rem)] lg:overflow-y-auto"
+              aria-label="Table of Contents"
+            >
+              <nav class="bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg p-4">
+                <h2 class="font-mono text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400 mb-3 pb-2 border-b border-gray-200 dark:border-gray-700">
+                  On This Page
+                </h2>
+                <div
+                  class="text-sm leading-relaxed [&_ul]:list-none [&_ul]:m-0 [&_ul]:p-0 [&_li]:my-1 [&_a]:block [&_a]:px-2 [&_a]:py-1 [&_a]:text-gray-600 [&_a]:no-underline [&_a]:rounded-sm [&_a]:transition-colors [&_a:hover]:bg-emerald-50 [&_a:hover]:text-emerald-600 [&_ul_ul]:pl-3 [&_ul_ul_a]:text-xs [&_ul_ul_a]:text-gray-500"
+                  id="toc-container"
+                >
+                  {/* TOC content populated by JS or React component */}
+                  <noscript>
+                    <p class="text-xs text-fg-muted italic">
+                      Enable JavaScript to see the table of contents.
+                    </p>
+                  </noscript>
+                </div>
+              </nav>
+            </aside>
+          )
+        }
+
+        <!-- Main Content -->
+        <div
+          class:list={[
+            "order-1 lg:order-2",
+            hasSidebar ? "prose-content" : "bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg p-6 md:p-8 prose-content",
+          ]}
+          itemprop="mainContentOfPage"
+        >
+          <slot />
+        </div>
+      </div>
+    </div>
+
+  </article>
+  </ContentWrapper>
+</Layout>
+
+<style is:global>
+  /*
+   * Prose Content Styling
+   * Typography and spacing for long-form content (Light Theme)
+   */
+  .prose-content {
+    color: #171717; /* gray-900 */
+    line-height: 1.75;
+  }
+
+  .prose-content h2 {
+    color: #0a0a0a; /* gray-950 */
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-top: 2.5rem;
+    margin-bottom: 1rem;
+    line-height: 1.3;
+  }
+
+  .prose-content h3 {
+    color: #0a0a0a; /* gray-950 */
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-top: 2rem;
+    margin-bottom: 0.75rem;
+    line-height: 1.4;
+  }
+
+  .prose-content h4 {
+    color: #0a0a0a; /* gray-950 */
+    font-size: 1.125rem;
+    font-weight: 600;
+    margin-top: 1.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .prose-content p {
+    margin-bottom: 1.25rem;
+  }
+
+  .prose-content a {
+    color: #047857; /* emerald-700 - WCAG AA compliant */
+    text-decoration: none;
+    transition: color 0.15s ease;
+  }
+
+  .prose-content a:hover {
+    color: #065f46; /* emerald-800 */
+    text-decoration: underline;
+  }
+
+  .prose-content ul,
+  .prose-content ol {
+    margin-bottom: 1.25rem;
+    padding-left: 1.5rem;
+  }
+
+  .prose-content li {
+    margin-bottom: 0.5rem;
+  }
+
+  .prose-content blockquote {
+    border-left: 4px solid #047857; /* emerald-700 */
+    padding-left: 1rem;
+    margin: 1.5rem 0;
+    color: #525252; /* gray-600 */
+    font-style: italic;
+  }
+
+  .prose-content code {
+    background: #f3f4f6; /* gray-100 */
+    padding: 0.2em 0.4em;
+    border-radius: 0.25rem;
+    font-size: 0.875em;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  }
+
+  .prose-content pre {
+    background: #f3f4f6; /* gray-100 */
+    padding: 1rem;
+    border-radius: 0.5rem;
+    overflow-x: auto;
+    margin-bottom: 1.25rem;
+  }
+
+  .prose-content pre code {
+    background: transparent;
+    padding: 0;
+    border-radius: 0;
+  }
+
+  .prose-content hr {
+    border: none;
+    border-top: 1px solid #e5e7eb; /* gray-200 */
+    margin: 2rem 0;
+  }
+
+  .prose-content img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 0.5rem;
+    margin: 1.5rem 0;
+  }
+
+  .prose-content table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 1.25rem;
+  }
+
+  .prose-content th,
+  .prose-content td {
+    border: 1px solid #e5e7eb; /* gray-200 */
+    padding: 0.75rem;
+    text-align: left;
+  }
+
+  .prose-content th {
+    background: #f3f4f6; /* gray-100 */
+    font-weight: 600;
+    color: #0a0a0a; /* gray-950 */
+  }
+
+  /*
+   * Prose Content Styling — Dark Theme
+   */
+  .dark .prose-content {
+    color: #e5e5e5; /* gray-200 */
+  }
+
+  .dark .prose-content h2,
+  .dark .prose-content h3,
+  .dark .prose-content h4 {
+    color: #f5f5f5; /* gray-100 */
+  }
+
+  .dark .prose-content a {
+    color: #34d399; /* emerald-400 */
+  }
+
+  .dark .prose-content a:hover {
+    color: #6ee7b7; /* emerald-300 */
+  }
+
+  .dark .prose-content blockquote {
+    border-left-color: #10b981; /* emerald-500 */
+    color: #a3a3a3; /* gray-400 */
+  }
+
+  .dark .prose-content code {
+    background: #1a1a1a; /* gray-900 */
+  }
+
+  .dark .prose-content pre {
+    background: #1a1a1a; /* gray-900 */
+  }
+
+  .dark .prose-content hr {
+    border-top-color: #333333; /* gray-700 */
+  }
+
+  .dark .prose-content th,
+  .dark .prose-content td {
+    border-color: #333333; /* gray-700 */
+  }
+
+  .dark .prose-content th {
+    background: #1a1a1a; /* gray-900 */
+    color: #f5f5f5; /* gray-100 */
+  }
+</style>

@@ -1,0 +1,1025 @@
+---
+/**
+ * Service Layout (Astro)
+ * ======================
+ * Layout for service pages. Extends base Layout.astro with:
+ * - Service hero with title, tagline, reading time, and CTA
+ * - Benefits section (what you get)
+ * - Ideal for section (target audience)
+ * - Process steps section (numbered timeline)
+ * - Deliverables grid section
+ * - Main content area (from Markdown body)
+ * - FAQ accordion with Schema.org FAQPage markup
+ * - CTA section
+ *
+ * Migrated from: _layouts/service.html
+ *
+ * Usage:
+ *   <ServiceLayout frontmatter={entry.data}>
+ *     <Content />
+ *   </ServiceLayout>
+ *
+ * Props:
+ *   - title: Service title (required)
+ *   - tagline: Value proposition (required)
+ *   - cta_text: Hero CTA button text
+ *   - benefits: Array of benefit strings
+ *   - ideal_for: Array of ideal customer descriptions
+ *   - process: Array of {title, icon?, description} steps
+ *   - deliverables: Array of {title, icon?, description} items
+ *   - faqs: Array of {question, answer} objects
+ *   - overview_title: Custom title for benefits section
+ *   - cta_headline: Custom CTA section headline
+ *   - cta_subtext: CTA section subtext
+ *   - schema_type: Schema.org type (default: "Service")
+ */
+
+import Layout from "./Layout.astro";
+import PageBackground from "@/components/PageBackground.astro";
+import AnimatedSection from "@/components/AnimatedSection.astro";
+import SectionConnector from "@/components/SectionConnector.astro";
+import Breadcrumbs from "@/components/Breadcrumbs.astro";
+import { SITE } from "@/data/site";
+
+// Type definitions from content config
+interface FAQ {
+  question: string;
+  answer: string;
+}
+
+interface ProcessStep {
+  title: string;
+  icon?: string;
+  description: string;
+}
+
+interface Deliverable {
+  title: string;
+  icon?: string;
+  description: string;
+}
+
+interface Props {
+  // Required
+  title: string;
+  tagline: string;
+
+  // Call-to-action options
+  cta_text?: string;
+  cta_headline?: string;
+  cta_subtext?: string;
+
+  // Content sections
+  overview_title?: string;
+  benefits?: string[];
+  ideal_for?: string[];
+
+  // Structured content
+  faqs?: FAQ[];
+  process?: ProcessStep[];
+  deliverables?: Deliverable[];
+
+  // SEO & technical
+  schema_type?: string;
+  last_modified_at?: Date;
+  draft?: boolean;
+  permalink?: string;
+}
+
+const {
+  title,
+  tagline,
+  cta_text,
+  cta_headline = "Sound like what you need?",
+  cta_subtext = "Tell us what you're dealing with. We'll be honest about whether we can help.",
+  overview_title = "What You Get",
+  benefits = [],
+  ideal_for = [],
+  faqs = [],
+  process = [],
+  deliverables = [],
+  schema_type = "Service",
+} = Astro.props;
+
+// Calculate reading time based on slot content (estimate ~200 words/min)
+// Using a default of 5 min; actual calculation would require rendered content
+const readingTime = 5;
+
+// Generate FAQ Schema.org JSON-LD
+const faqSchema =
+  faqs.length > 0
+    ? {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        mainEntity: faqs.map((faq) => ({
+          "@type": "Question",
+          name: faq.question,
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: faq.answer.replace(/<[^>]*>/g, ""), // Strip HTML
+          },
+        })),
+      }
+    : null;
+
+// Generate Service Schema.org JSON-LD
+const serviceSchema = {
+  "@context": "https://schema.org",
+  "@type": schema_type,
+  name: title,
+  description: tagline,
+  provider: {
+    "@type": "Organization",
+    name: SITE.title,
+    url: SITE.url,
+  },
+};
+
+// BreadcrumbList Schema for SEO
+const currentUrl = new URL(Astro.url.pathname, Astro.site || SITE.url).href;
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": SITE.url
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Services",
+      "item": new URL('/services/', SITE.url).href
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": title,
+      "item": currentUrl
+    }
+  ]
+};
+---
+
+<Layout title={title} description={tagline} type="website" canonicalUrl={currentUrl}>
+  {/* Schema.org structured data */}
+  <Fragment slot="head">
+    <script
+      is:inline
+      type="application/ld+json"
+      set:html={JSON.stringify(breadcrumbSchema)}
+    />
+    <script
+      is:inline
+      type="application/ld+json"
+      set:html={JSON.stringify(serviceSchema)}
+    />
+    {faqSchema && (
+      <script is:inline type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
+    )}
+  </Fragment>
+
+  <PageBackground>
+  <article
+    class="service-page"
+    itemscope
+    itemtype={`https://schema.org/${schema_type}`}
+  >
+    {/* =====================================================================
+        SERVICE HERO SECTION
+        ===================================================================== */}
+    <AnimatedSection animation="fade-up" delay={0} as="header" class="service-hero relative overflow-hidden">
+      {/* Decorative Gradient Blobs */}
+      <div
+        class="absolute -top-8 right-[10%] w-48 h-48 md:w-72 md:h-72 bg-linear-to-br from-emerald-200/30 dark:from-emerald-800/15 to-teal-100/20 dark:to-teal-900/10 rounded-full blur-3xl pointer-events-none"
+        aria-hidden="true"
+      />
+      <div
+        class="absolute top-20 left-[5%] w-32 h-32 md:w-48 md:h-48 bg-linear-to-tr from-amber-100/40 dark:from-amber-900/20 to-orange-100/30 dark:to-orange-900/15 rounded-full blur-2xl pointer-events-none"
+        aria-hidden="true"
+      />
+
+      <div class="service-hero__container relative z-10">
+        {/* Breadcrumbs */}
+        <Breadcrumbs items={[
+          { label: "Services", href: "/services/" },
+          { label: title },
+        ]} />
+
+        {/* Service Type Tag */}
+        <span class="service-hero__tag">Service</span>
+
+        {/* Title */}
+        <h1 class="service-hero__title" itemprop="name">{title}</h1>
+
+        {/* Tagline/Value Proposition */}
+        <p class="service-hero__tagline" itemprop="description">{tagline}</p>
+
+        {/* Meta Info */}
+        <div class="service-hero__meta">
+          <span class="service-hero__reading-time">
+            <svg
+              class="service-hero__meta-icon"
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              aria-hidden="true"
+            >
+              <circle cx="12" cy="12" r="10"></circle>
+              <polyline points="12 6 12 12 16 14"></polyline>
+            </svg>
+            {readingTime} min read
+          </span>
+        </div>
+
+        {/* Hero CTA Button */}
+        {cta_text && (
+          <div class="service-hero__cta">
+            <a href="/contact/" class="btn btn--primary btn--lg">
+              {cta_text}
+              <svg
+                class="btn__icon"
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                aria-hidden="true"
+              >
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
+              </svg>
+            </a>
+          </div>
+        )}
+      </div>
+    </AnimatedSection>
+
+    <SectionConnector variant="curve" color="cool" />
+
+    {/* =====================================================================
+        BENEFITS SECTION — What's Included / Value Prop
+        ===================================================================== */}
+    {benefits.length > 0 && (
+      <AnimatedSection animation="fade-up" delay={0} as="section" class="service-benefits" aria-labelledby="benefits-heading">
+        <div class="service-benefits__container">
+          <h2 id="benefits-heading" class="service-section__title">
+            <span class="service-section__icon" aria-hidden="true">▸</span>
+            {overview_title}
+          </h2>
+          <ul class="service-benefits__list">
+            {benefits.map((benefit) => (
+              <li class="service-benefits__item">
+                <svg
+                  class="service-benefits__icon"
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  aria-hidden="true"
+                >
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+                <span set:html={benefit} />
+              </li>
+            ))}
+          </ul>
+        </div>
+      </AnimatedSection>
+    )}
+
+    <SectionConnector variant="wave" color="warm" />
+
+    {/* =====================================================================
+        IDEAL FOR SECTION — Target Audience
+        ===================================================================== */}
+    {ideal_for.length > 0 && (
+      <AnimatedSection animation="fade-up" delay={0} as="section" class="service-ideal-for" aria-labelledby="ideal-for-heading">
+        <div class="service-ideal-for__container">
+          <h2 id="ideal-for-heading" class="service-section__title">
+            <span class="service-section__icon" aria-hidden="true">▸</span>
+            This Service Is Ideal For
+          </h2>
+          <ul class="service-ideal-for__list">
+            {ideal_for.map((customer) => (
+              <li class="service-ideal-for__item">
+                <span set:html={customer} />
+              </li>
+            ))}
+          </ul>
+        </div>
+      </AnimatedSection>
+    )}
+
+    <SectionConnector variant="curve" color="neutral" />
+
+    {/* =====================================================================
+        PROCESS STEPS — Numbered Timeline
+        ===================================================================== */}
+    {process.length > 0 && (
+      <AnimatedSection animation="fade-up" delay={0} as="section" class="service-process" aria-labelledby="process-heading">
+        <div class="service-process__container">
+          <h2
+            id="process-heading"
+            class="service-section__title service-section__title--center"
+          >
+            How We Work Together
+          </h2>
+          <ol class="service-process__steps">
+            {process.map((step, index) => (
+              <li class="service-process__step glass-card">
+                <span class="service-process__step-number">{index + 1}</span>
+                <h3 class="service-process__step-title">{step.title}</h3>
+                <p class="service-process__step-description">
+                  {step.description}
+                </p>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </AnimatedSection>
+    )}
+
+    <SectionConnector variant="wave" color="cool" />
+
+    {/* =====================================================================
+        DELIVERABLES SECTION — What You'll Receive
+        ===================================================================== */}
+    {deliverables.length > 0 && (
+      <AnimatedSection animation="fade-up" delay={0} as="section"
+        class="service-deliverables"
+        aria-labelledby="deliverables-heading"
+      >
+        <div class="service-deliverables__container">
+          <h2
+            id="deliverables-heading"
+            class="service-section__title service-section__title--center"
+          >
+            What You'll Receive
+          </h2>
+          <div class="service-deliverables__grid">
+            {deliverables.map((deliverable) => (
+              <div class="service-deliverables__item glass-card">
+                <div
+                  class="service-deliverables__icon-wrapper"
+                  aria-hidden="true"
+                >
+                  <svg
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                    ></path>
+                    <polyline points="14 2 14 8 20 8"></polyline>
+                    <line x1="16" y1="13" x2="8" y2="13"></line>
+                    <line x1="16" y1="17" x2="8" y2="17"></line>
+                    <polyline points="10 9 9 9 8 9"></polyline>
+                  </svg>
+                </div>
+                <h3 class="service-deliverables__title">{deliverable.title}</h3>
+                <p class="service-deliverables__description">
+                  {deliverable.description}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </AnimatedSection>
+    )}
+
+    <SectionConnector variant="curve" color="warm" />
+
+    {/* =====================================================================
+        MAIN CONTENT — Detailed Service Information
+        ===================================================================== */}
+    <AnimatedSection animation="fade-up" delay={0} as="section" class="service-content" itemprop="articleBody">
+      <div class="service-content__container prose prose-lg max-w-none">
+        <slot />
+      </div>
+    </AnimatedSection>
+
+    <SectionConnector variant="wave" color="neutral" />
+
+    {/* =====================================================================
+        FAQ SECTION — Frequently Asked Questions
+        ===================================================================== */}
+    {faqs.length > 0 && (
+      <AnimatedSection animation="fade-up" delay={0} as="section" class="service-faq" aria-labelledby="faq-heading">
+        <div class="service-faq__container">
+          <h2
+            id="faq-heading"
+            class="service-section__title service-section__title--center"
+          >
+            Frequently Asked Questions
+          </h2>
+          <div class="service-faq__list">
+            {faqs.map((faq) => (
+              <details class="service-faq__item glass-card">
+                <summary class="service-faq__question">
+                  <span>{faq.question}</span>
+                  <svg
+                    class="service-faq__chevron"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    aria-hidden="true"
+                  >
+                    <polyline points="6 9 12 15 18 9"></polyline>
+                  </svg>
+                </summary>
+                <div class="service-faq__answer" set:html={faq.answer} />
+              </details>
+            ))}
+          </div>
+        </div>
+      </AnimatedSection>
+    )}
+
+    {/* =====================================================================
+        RELATED CASE STUDIES — Placeholder slot
+        ===================================================================== */}
+    <slot name="case-studies" />
+
+    {/* =====================================================================
+        TESTIMONIALS — Placeholder slot
+        ===================================================================== */}
+    <slot name="testimonials" />
+
+    <SectionConnector variant="curve" color="cool" />
+
+    {/* =====================================================================
+        CTA SECTION — Contact / Get Started
+        ===================================================================== */}
+    <AnimatedSection animation="fade-up" delay={0} as="section" class="service-cta" aria-labelledby="service-cta-heading">
+      <div class="service-cta__container glass-card glass-card--bordered glass-card--glow">
+        <h2 id="service-cta-heading" class="service-cta__title">
+          {cta_headline}
+        </h2>
+        <p class="service-cta__text">{cta_subtext}</p>
+        <a href="/contact/" class="btn btn--primary btn--lg">
+          {cta_text || "Get My Free Assessment"}
+          <svg
+            class="btn__icon"
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            aria-hidden="true"
+          >
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+            <polyline points="12 5 19 12 12 19"></polyline>
+          </svg>
+        </a>
+      </div>
+    </AnimatedSection>
+
+    {/* Service disclaimer — CUSTOMIZE: Update with your own disclaimer if needed */}
+    <div class="max-w-3xl mx-auto px-4 py-8 text-center">
+      <p class="text-xs text-gray-400 leading-relaxed">
+        {SITE.title} provides professional services as described on this page. Our services do not constitute legal, financial, tax, or investment advice. Please consult a licensed professional for specialized guidance.
+      </p>
+    </div>
+
+    {/* Hidden permalink for microformats */}
+    <a href={Astro.url.href} hidden itemprop="mainEntityOfPage"></a>
+  </article>
+  </PageBackground>
+</Layout>
+
+<style>
+  /* ==========================================================================
+     SERVICE PAGE STYLES
+     ========================================================================== */
+
+  .service-page {
+    width: 100%;
+  }
+
+  /* --------------------------------------------------------------------------
+     HERO SECTION
+     -------------------------------------------------------------------------- */
+
+  .service-hero {
+    padding: var(--spacing-16) var(--spacing-4);
+    background: linear-gradient(
+      to bottom,
+      var(--color-bg-alt),
+      var(--color-bg)
+    );
+    text-align: center;
+  }
+
+  .service-hero__container {
+    max-width: 48rem;
+    margin: 0 auto;
+  }
+
+  .service-hero__tag {
+    display: inline-block;
+    padding: var(--spacing-1) var(--spacing-3);
+    font-size: var(--font-size-xs);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--color-accent-primary);
+    background: var(--color-accent-bg-subtle);
+    border: 1px solid var(--color-border-accent);
+    border-radius: var(--radius-pill);
+    margin-bottom: var(--spacing-4);
+  }
+
+  .service-hero__title {
+    font-size: var(--font-size-4xl);
+    font-weight: 700;
+    line-height: 1.2;
+    color: var(--color-fg-bold);
+    margin-bottom: var(--spacing-4);
+  }
+
+  @media (min-width: 768px) {
+    .service-hero__title {
+      font-size: var(--font-size-5xl);
+    }
+  }
+
+  .service-hero__tagline {
+    font-size: var(--font-size-lg);
+    color: var(--color-fg-light);
+    margin-bottom: var(--spacing-6);
+    max-width: 40rem;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .service-hero__meta {
+    display: flex;
+    justify-content: center;
+    gap: var(--spacing-4);
+    font-size: var(--font-size-sm);
+    color: var(--color-fg-muted);
+    margin-bottom: var(--spacing-6);
+  }
+
+  .service-hero__reading-time {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-2);
+  }
+
+  .service-hero__meta-icon {
+    width: 1rem;
+    height: 1rem;
+  }
+
+  .service-hero__cta {
+    margin-top: var(--spacing-8);
+  }
+
+  /* --------------------------------------------------------------------------
+     SHARED SECTION STYLES
+     -------------------------------------------------------------------------- */
+
+  .service-section__title {
+    font-size: var(--font-size-2xl);
+    font-weight: 600;
+    color: var(--color-fg-bold);
+    margin-bottom: var(--spacing-6);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-2);
+  }
+
+  .service-section__title--center {
+    justify-content: center;
+    text-align: center;
+  }
+
+  .service-section__icon {
+    color: var(--color-accent-primary);
+  }
+
+  /* --------------------------------------------------------------------------
+     BENEFITS SECTION
+     -------------------------------------------------------------------------- */
+
+  .service-benefits {
+    padding: var(--spacing-16) var(--spacing-4);
+  }
+
+  .service-benefits__container {
+    max-width: 48rem;
+    margin: 0 auto;
+  }
+
+  .service-benefits__list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: var(--spacing-4);
+  }
+
+  .service-benefits__item {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--spacing-3);
+    padding: var(--spacing-4);
+    background: var(--color-surface-glass);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--color-border);
+  }
+
+  .service-benefits__icon {
+    flex-shrink: 0;
+    width: 1.25rem;
+    height: 1.25rem;
+    color: var(--color-success);
+    margin-top: 0.125rem;
+  }
+
+  .service-benefits__item span {
+    color: var(--color-fg);
+    line-height: 1.6;
+  }
+
+  /* --------------------------------------------------------------------------
+     IDEAL FOR SECTION
+     -------------------------------------------------------------------------- */
+
+  .service-ideal-for {
+    padding: var(--spacing-16) var(--spacing-4);
+    background: var(--color-bg-alt);
+  }
+
+  .service-ideal-for__container {
+    max-width: 48rem;
+    margin: 0 auto;
+  }
+
+  .service-ideal-for__list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: var(--spacing-3);
+  }
+
+  .service-ideal-for__item {
+    padding: var(--spacing-3) var(--spacing-4);
+    padding-left: var(--spacing-8);
+    position: relative;
+    color: var(--color-fg);
+    line-height: 1.6;
+  }
+
+  .service-ideal-for__item::before {
+    content: "→";
+    position: absolute;
+    left: var(--spacing-3);
+    color: var(--color-accent-primary);
+    font-weight: 600;
+  }
+
+  /* --------------------------------------------------------------------------
+     PROCESS SECTION
+     -------------------------------------------------------------------------- */
+
+  .service-process {
+    padding: var(--spacing-16) var(--spacing-4);
+  }
+
+  .service-process__container {
+    max-width: 64rem;
+    margin: 0 auto;
+  }
+
+  .service-process__steps {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: var(--spacing-6);
+  }
+
+  @media (min-width: 768px) {
+    .service-process__steps {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .service-process__steps {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+
+  .service-process__step {
+    padding: var(--spacing-6);
+    text-align: center;
+  }
+
+  .service-process__step-number {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 3rem;
+    height: 3rem;
+    font-size: var(--font-size-xl);
+    font-weight: 700;
+    color: var(--color-bg);
+    background: linear-gradient(
+      135deg,
+      var(--color-accent-primary),
+      var(--color-accent-secondary)
+    );
+    border-radius: var(--radius-full);
+    margin-bottom: var(--spacing-4);
+  }
+
+  .service-process__step-title {
+    font-size: var(--font-size-lg);
+    font-weight: 600;
+    color: var(--color-fg-bold);
+    margin-bottom: var(--spacing-2);
+  }
+
+  .service-process__step-description {
+    font-size: var(--font-size-sm);
+    color: var(--color-fg-light);
+    line-height: 1.6;
+  }
+
+  /* --------------------------------------------------------------------------
+     DELIVERABLES SECTION
+     -------------------------------------------------------------------------- */
+
+  .service-deliverables {
+    padding: var(--spacing-16) var(--spacing-4);
+    background: var(--color-bg-alt);
+  }
+
+  .service-deliverables__container {
+    max-width: 64rem;
+    margin: 0 auto;
+  }
+
+  .service-deliverables__grid {
+    display: grid;
+    gap: var(--spacing-6);
+  }
+
+  @media (min-width: 640px) {
+    .service-deliverables__grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .service-deliverables__grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+
+  .service-deliverables__item {
+    padding: var(--spacing-6);
+    text-align: center;
+  }
+
+  .service-deliverables__icon-wrapper {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 3rem;
+    height: 3rem;
+    background: var(--color-accent-bg-subtle);
+    border: 1px solid var(--color-border-accent);
+    border-radius: var(--radius-lg);
+    margin-bottom: var(--spacing-4);
+    color: var(--color-accent-primary);
+  }
+
+  .service-deliverables__title {
+    font-size: var(--font-size-base);
+    font-weight: 600;
+    color: var(--color-fg-bold);
+    margin-bottom: var(--spacing-2);
+  }
+
+  .service-deliverables__description {
+    font-size: var(--font-size-sm);
+    color: var(--color-fg-light);
+    line-height: 1.6;
+  }
+
+  /* --------------------------------------------------------------------------
+     MAIN CONTENT SECTION
+     -------------------------------------------------------------------------- */
+
+  .service-content {
+    padding: var(--spacing-16) var(--spacing-4);
+  }
+
+  .service-content__container {
+    max-width: 48rem;
+    margin: 0 auto;
+  }
+
+  /* --------------------------------------------------------------------------
+     FAQ SECTION
+     -------------------------------------------------------------------------- */
+
+  .service-faq {
+    padding: var(--spacing-16) var(--spacing-4);
+    background: var(--color-bg-alt);
+  }
+
+  .service-faq__container {
+    max-width: 48rem;
+    margin: 0 auto;
+  }
+
+  .service-faq__list {
+    display: grid;
+    gap: var(--spacing-4);
+  }
+
+  .service-faq__item {
+    padding: 0;
+    overflow: hidden;
+  }
+
+  .service-faq__question {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: var(--spacing-4) var(--spacing-5);
+    font-size: var(--font-size-base);
+    font-weight: 600;
+    color: var(--color-fg-bold);
+    cursor: pointer;
+    list-style: none;
+    transition: color var(--transition-fast) ease;
+  }
+
+  .service-faq__question::-webkit-details-marker {
+    display: none;
+  }
+
+  .service-faq__question:hover {
+    color: var(--color-accent-primary);
+  }
+
+  .service-faq__question span {
+    flex: 1;
+    text-align: left;
+    padding-right: var(--spacing-4);
+  }
+
+  .service-faq__chevron {
+    flex-shrink: 0;
+    width: 1.25rem;
+    height: 1.25rem;
+    color: var(--color-fg-muted);
+    transition: transform var(--transition-fast) ease;
+  }
+
+  details[open] .service-faq__chevron {
+    transform: rotate(180deg);
+  }
+
+  .service-faq__answer {
+    padding: 0 var(--spacing-5) var(--spacing-5);
+    color: var(--color-fg-light);
+    line-height: 1.7;
+  }
+
+  .service-faq__answer p {
+    margin: 0;
+  }
+
+  .service-faq__answer a {
+    color: var(--color-accent-primary);
+    text-decoration: underline;
+  }
+
+  .service-faq__answer a:hover {
+    color: var(--color-accent-primary-light);
+  }
+
+  /* --------------------------------------------------------------------------
+     CTA SECTION
+     -------------------------------------------------------------------------- */
+
+  .service-cta {
+    padding: var(--spacing-16) var(--spacing-4);
+  }
+
+  .service-cta__container {
+    max-width: 48rem;
+    margin: 0 auto;
+    padding: var(--spacing-10);
+    text-align: center;
+  }
+
+  .service-cta__title {
+    font-size: var(--font-size-2xl);
+    font-weight: 700;
+    color: var(--color-fg-bold);
+    margin-bottom: var(--spacing-4);
+  }
+
+  .service-cta__text {
+    font-size: var(--font-size-lg);
+    color: var(--color-fg-light);
+    margin-bottom: var(--spacing-6);
+  }
+
+  /* --------------------------------------------------------------------------
+     GLASS CARD COMPONENT
+     -------------------------------------------------------------------------- */
+
+  .glass-card {
+    background: var(--color-surface-glass);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+
+  .glass-card--bordered {
+    border: 1px solid var(--color-border-accent);
+  }
+
+  .glass-card--glow {
+    box-shadow: var(--shadow-glow-sm);
+  }
+
+  /* --------------------------------------------------------------------------
+     BUTTON COMPONENT
+     -------------------------------------------------------------------------- */
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-2);
+    padding: var(--spacing-3) var(--spacing-6);
+    font-size: var(--font-size-base);
+    font-weight: 600;
+    text-decoration: none;
+    border-radius: var(--radius-lg);
+    transition: all var(--transition-fast) ease;
+    cursor: pointer;
+    border: none;
+  }
+
+  .btn--primary {
+    color: var(--color-bg);
+    background: linear-gradient(
+      135deg,
+      var(--color-accent-primary),
+      var(--color-accent-secondary)
+    );
+  }
+
+  .btn--primary:hover {
+    box-shadow: var(--shadow-glow-md);
+    transform: translateY(-2px);
+  }
+
+  .btn--lg {
+    padding: var(--spacing-4) var(--spacing-8);
+    font-size: var(--font-size-lg);
+  }
+
+  .btn__icon {
+    width: 1rem;
+    height: 1rem;
+    transition: transform var(--transition-fast) ease;
+  }
+
+  .btn:hover .btn__icon {
+    transform: translateX(4px);
+  }
+
+  /* Prose typography is now handled by Tailwind Typography plugin
+     See src/styles/global.css for cyber-themed prose customizations */
+</style>

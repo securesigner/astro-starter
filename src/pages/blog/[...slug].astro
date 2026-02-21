@@ -1,0 +1,76 @@
+---
+/**
+ * Dynamic Blog Post Page
+ * ======================
+ * Renders individual blog posts using content collections.
+ * Uses [...slug] to support nested routes if needed.
+ *
+ * Features:
+ * - Dynamic routing from content collection
+ * - Uses BlogPostLayout for consistent styling
+ * - URL Pattern: /blog/[slug]/
+ * - Filters out draft posts in production
+ */
+
+import { getCollection, render } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
+import BlogPostLayout from '../../layouts/BlogPostLayout.astro';
+
+// Generate static paths for all blog posts
+export async function getStaticPaths() {
+  const posts = await getCollection('blog', ({ data }) => {
+    // In production, filter out drafts
+    return import.meta.env.PROD ? data.draft !== true : true;
+  });
+
+  return posts.map((post) => ({
+    params: { slug: post.slug },
+    props: { post },
+  }));
+}
+
+// Type for the page props
+interface Props {
+  post: CollectionEntry<'blog'>;
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+
+// Extract frontmatter data
+const {
+  title,
+  date,
+  author,
+  categories,
+  tags,
+  excerpt,
+  description,
+  image,
+  ogImage,
+  schema_type,
+  last_modified_at,
+  draft,
+  related_service,
+} = post.data;
+---
+
+<BlogPostLayout
+  title={title}
+  date={date}
+  author={author}
+  categories={categories}
+  tags={tags}
+  excerpt={excerpt}
+  description={description}
+  image={image}
+  ogImage={ogImage}
+  schema_type={schema_type}
+  last_modified_at={last_modified_at}
+  draft={draft}
+  content={post.body}
+  currentSlug={post.slug}
+  relatedService={related_service}
+>
+  <Content />
+</BlogPostLayout>

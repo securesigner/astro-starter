@@ -1,0 +1,133 @@
+---
+/**
+ * RelatedPosts Component
+ * =====================================================
+ * Displays related blog posts based on shared categories and tags.
+ * Improves internal linking for SEO and user engagement.
+ *
+ * Algorithm:
+ * 1. Primary: Match by category (same topic area)
+ * 2. Secondary: Match by tags (specific topics)
+ * 3. Fallback: Most recent posts if no matches
+ *
+ * Features:
+ * - Excludes current post from results
+ * - Scores posts by relevance (category weight > tag weight)
+ * - Shows 3 related posts by default
+ * - Falls back to recent posts if insufficient matches
+ * - Hides section entirely if no posts available
+ *
+ * Props:
+ *   - currentSlug: Slug of the current post to exclude
+ *   - categories: Categories of the current post
+ *   - tags: Tags of the current post
+ *   - maxPosts: Maximum number of posts to display (default: 3)
+ */
+
+import { getCollection } from 'astro:content';
+import BlogCard from './BlogCard.astro';
+
+interface Props {
+  currentSlug: string;
+  categories?: string[];
+  tags?: string[];
+  maxPosts?: number;
+}
+
+const {
+  currentSlug,
+  categories = [],
+  tags = [],
+  maxPosts = 3,
+} = Astro.props;
+
+// Fetch all published blog posts
+const allPosts = await getCollection('blog', ({ data }) => {
+  return import.meta.env.PROD ? data.draft !== true : true;
+});
+
+// Filter out the current post
+const otherPosts = allPosts.filter((post) => post.slug !== currentSlug);
+
+// Score each post by relevance to current post
+interface ScoredPost {
+  post: typeof otherPosts[0];
+  score: number;
+  matchedCategories: string[];
+  matchedTags: string[];
+}
+
+const scoredPosts: ScoredPost[] = otherPosts.map((post) => {
+  const postCategories = post.data.categories || [];
+  const postTags = post.data.tags || [];
+
+  // Find matches (case-insensitive)
+  const matchedCategories = categories.filter((cat) =>
+    postCategories.some((pc) => pc.toLowerCase() === cat.toLowerCase())
+  );
+  const matchedTags = tags.filter((tag) =>
+    postTags.some((pt) => pt.toLowerCase() === tag.toLowerCase())
+  );
+
+  // Score: categories worth 3 points each, tags worth 1 point each
+  const score = matchedCategories.length * 3 + matchedTags.length;
+
+  return {
+    post,
+    score,
+    matchedCategories,
+    matchedTags,
+  };
+});
+
+// Sort by score (descending), then by date (most recent first)
+scoredPosts.sort((a, b) => {
+  if (b.score !== a.score) {
+    return b.score - a.score;
+  }
+  return b.post.data.date.getTime() - a.post.data.date.getTime();
+});
+
+// Get top posts with score > 0
+let relatedPosts = scoredPosts
+  .filter((sp) => sp.score > 0)
+  .slice(0, maxPosts)
+  .map((sp) => sp.post);
+
+// Fallback: if not enough related posts, fill with recent posts
+if (relatedPosts.length < maxPosts) {
+  const existingSlugs = new Set(relatedPosts.map((p) => p.slug));
+  const recentPosts = otherPosts
+    .filter((p) => !existingSlugs.has(p.slug))
+    .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
+    .slice(0, maxPosts - relatedPosts.length);
+
+  relatedPosts = [...relatedPosts, ...recentPosts];
+}
+
+// Don't render anything if no posts available
+const hasRelatedPosts = relatedPosts.length > 0;
+---
+
+{hasRelatedPosts && (
+  <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+    {relatedPosts.map((post) => (
+      <BlogCard
+        title={post.data.title}
+        slug={post.slug}
+        date={post.data.date}
+        excerpt={post.data.excerpt}
+        description={post.data.description}
+        author={post.data.author}
+        categories={post.data.categories}
+        image={post.data.image}
+      />
+    ))}
+  </div>
+)}
+
+{!hasRelatedPosts && (
+  <p class="text-center text-fg-light">
+    More articles coming soon.
+  </p>
+)}

@@ -1,0 +1,207 @@
+---
+/**
+ * Privacy Policy Page
+ * ===================
+ * CUSTOMIZE: Update with your own privacy practices and hosting details.
+ */
+
+import PageLayout from "@/layouts/PageLayout.astro";
+
+// Page metadata
+const title = "Privacy Policy";
+const description =
+  "Your privacy matters. We built this site with a privacy-first philosophy—no tracking cookies, no invasive analytics, and no selling your data.";
+---
+
+<PageLayout
+  title={title}
+  description={description}
+  layoutWidth="normal"
+  schemaType="WebPage"
+  useBackground={true}
+>
+  <p class="text-fg-muted mb-8">
+    <strong class="text-fg-bold">Effective Date:</strong> January 1, 2026
+  </p>
+
+  <!-- What We Collect Section -->
+  <section class="mb-12">
+    <h2 class="text-2xl font-bold text-fg-bold mb-4">What We Collect</h2>
+    <p class="text-fg-muted mb-6">
+      We only collect what's necessary to respond to your inquiries.
+    </p>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div class="glass-card p-6 rounded-xl">
+        <div class="flex items-center gap-3 mb-4">
+          <span class="text-2xl" aria-hidden="true">✉️</span>
+          <h3 class="text-lg font-bold text-fg-bold">Contact Form Data</h3>
+        </div>
+        <p class="text-fg-muted">
+          When you submit a form, we collect your <strong>name</strong>,{" "}
+          <strong>email address</strong>, and <strong>message</strong>—solely to
+          respond to your inquiry. We never use this data for marketing without
+          your explicit consent.
+        </p>
+      </div>
+      <div class="glass-card p-6 rounded-xl">
+        <div class="flex items-center gap-3 mb-4">
+          <span class="text-2xl" aria-hidden="true">📊</span>
+          <h3 class="text-lg font-bold text-fg-bold">Anonymous Analytics</h3>
+        </div>
+        <p class="text-fg-muted">
+          We use privacy-friendly, cookie-free analytics through our hosting
+          provider. No personal data is collected, no tracking cookies are set,
+          and the data is fully GDPR-compliant—no consent banner required.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- What We Don't Do Section -->
+  <section class="mb-12 glass-card p-8 rounded-xl bg-bg-surface/30">
+    <h2 class="text-2xl font-bold text-fg-bold mb-4">What We Don't Do</h2>
+    <p class="text-fg-muted mb-6">
+      We take a "privacy by default" approach to everything.
+    </p>
+    <ul class="space-y-4">
+      <li class="flex items-start gap-3">
+        <span class="text-red-400 text-lg" aria-hidden="true">🚫</span>
+        <span>
+          <strong class="text-fg-bold">No tracking cookies</strong> — We don't drop
+          any cookies on your browser.
+        </span>
+      </li>
+      <li class="flex items-start gap-3">
+        <span class="text-red-400 text-lg" aria-hidden="true">🚫</span>
+        <span>
+          <strong class="text-fg-bold">No data selling</strong> — We never sell,
+          rent, or share your information with third parties.
+        </span>
+      </li>
+      <li class="flex items-start gap-3">
+        <span class="text-red-400 text-lg" aria-hidden="true">🚫</span>
+        <span>
+          <strong class="text-fg-bold">No invasive trackers</strong> — No Google
+          Analytics, no Facebook Pixel, no retargeting ads.
+        </span>
+      </li>
+      <li class="flex items-start gap-3">
+        <span class="text-red-400 text-lg" aria-hidden="true">🚫</span>
+        <span>
+          <strong class="text-fg-bold">No hidden data collection</strong> — What
+          you see here is exactly what we collect.
+        </span>
+      </li>
+    </ul>
+  </section>
+
+  <!-- How We Protect Your Data Section -->
+  <section class="mb-12">
+    <h2 class="text-2xl font-bold text-fg-bold mb-6">How We Protect Your Data</h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div>
+        <h3 class="text-lg font-bold text-fg-bold mb-3">Secure Infrastructure</h3>
+        <ul class="space-y-2">
+          <li class="flex items-start gap-2">
+            <span class="text-accent-primary mt-1">•</span>
+            <span>
+              <strong class="text-fg-bold">Hosting:</strong> GitHub Pages with HTTPS encryption
+            </span>
+          </li>
+          <li class="flex items-start gap-2">
+            <span class="text-accent-primary mt-1">•</span>
+            <span>
+              <strong class="text-fg-bold">Forms:</strong> Processed securely by
+              Formspree
+            </span>
+          </li>
+          <li class="flex items-start gap-2">
+            <span class="text-accent-primary mt-1">•</span>
+            <span>
+              <strong class="text-fg-bold">Headers:</strong> Strict Content Security
+              Policy (CSP)
+            </span>
+          </li>
+        </ul>
+      </div>
+      <div>
+        <h3 class="text-lg font-bold text-fg-bold mb-3">Data Retention</h3>
+        <p class="text-fg-muted">
+          Contact form submissions are retained only as long as needed to respond
+          to your inquiry. Analytics data is aggregated and anonymized—we never
+          store individual user data.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Your Rights Section -->
+  <section class="mb-12">
+    <h2 class="text-2xl font-bold text-fg-bold mb-4">Your Rights</h2>
+    <p class="text-fg-muted mb-6">You have full control over your data.</p>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div class="glass-card p-5 rounded-xl">
+        <div class="flex items-center gap-3 mb-3">
+          <span class="text-xl" aria-hidden="true">👁️</span>
+          <h3 class="font-bold text-fg-bold">Access Your Data</h3>
+        </div>
+        <p class="text-sm text-fg-muted">
+          Request a copy of any personal data we have on file. We'll respond within
+          30 days.
+        </p>
+      </div>
+      <div class="glass-card p-5 rounded-xl">
+        <div class="flex items-center gap-3 mb-3">
+          <span class="text-xl" aria-hidden="true">🗑️</span>
+          <h3 class="font-bold text-fg-bold">Delete Your Data</h3>
+        </div>
+        <p class="text-sm text-fg-muted">
+          Request permanent deletion of your data at any time. We'll confirm removal
+          promptly.
+        </p>
+      </div>
+      <div class="glass-card p-5 rounded-xl">
+        <div class="flex items-center gap-3 mb-3">
+          <span class="text-xl" aria-hidden="true">✏️</span>
+          <h3 class="font-bold text-fg-bold">Correct Your Data</h3>
+        </div>
+        <p class="text-sm text-fg-muted">
+          If anything is inaccurate, let us know and we'll fix it immediately.
+        </p>
+      </div>
+      <div class="glass-card p-5 rounded-xl">
+        <div class="flex items-center gap-3 mb-3">
+          <span class="text-xl" aria-hidden="true">❓</span>
+          <h3 class="font-bold text-fg-bold">Ask Questions</h3>
+        </div>
+        <p class="text-sm text-fg-muted">
+          Have privacy concerns? We're happy to explain anything in plain language.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact Section -->
+  <section class="glass-card p-8 rounded-xl text-center">
+    <h2 class="text-2xl font-bold text-fg-bold mb-4">
+      Contact Us About Privacy
+    </h2>
+    <p class="text-fg-muted mb-6">
+      To exercise any of your data rights or ask privacy questions, use our contact form.
+    </p>
+    <div class="flex flex-wrap justify-center gap-4">
+      <a
+        href="/"
+        class="inline-flex items-center gap-2 px-6 py-3 bg-bg-surface border border-border rounded-lg text-fg-light hover:bg-bg-surface/80 transition-colors"
+      >
+        Return Home
+      </a>
+      <a
+        href="/contact/"
+        class="inline-flex items-center gap-2 px-6 py-3 bg-accent-primary text-white rounded-lg hover:bg-accent-primary/90 transition-colors"
+      >
+        Contact Us
+      </a>
+    </div>
+  </section>
+</PageLayout>

@@ -1,0 +1,77 @@
+---
+/**
+ * Dynamic Service Page
+ * ====================
+ * Renders individual service pages using content collections.
+ *
+ * Features:
+ * - Dynamic routing from content collection
+ * - Uses ServiceLayout for consistent styling
+ * - URL Pattern: /services/[slug]/
+ * - Filters out draft services in production
+ */
+
+import { getCollection, render } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
+import ServiceLayout from '../../layouts/ServiceLayout.astro';
+
+// Generate static paths for all services
+export async function getStaticPaths() {
+  const services = await getCollection('services', ({ data }) => {
+    // In production, filter out drafts
+    return import.meta.env.PROD ? data.draft !== true : true;
+  });
+
+  return services.map((service) => ({
+    params: { slug: service.slug },
+    props: { service },
+  }));
+}
+
+// Type for the page props
+interface Props {
+  service: CollectionEntry<'services'>;
+}
+
+const { service } = Astro.props;
+const { Content } = await render(service);
+
+// Extract frontmatter data
+const {
+  title,
+  tagline,
+  cta_text,
+  cta_headline,
+  cta_subtext,
+  overview_title,
+  benefits,
+  ideal_for,
+  faqs,
+  process,
+  deliverables,
+  schema_type,
+  last_modified_at,
+  draft,
+  permalink,
+} = service.data;
+---
+
+<ServiceLayout
+  title={title}
+  tagline={tagline}
+  cta_text={cta_text}
+  cta_headline={cta_headline}
+  cta_subtext={cta_subtext}
+  overview_title={overview_title}
+  benefits={benefits}
+  ideal_for={ideal_for}
+  faqs={faqs}
+  process={process}
+  deliverables={deliverables}
+  schema_type={schema_type}
+  last_modified_at={last_modified_at}
+  draft={draft}
+  permalink={permalink}
+>
+  <Content />
+</ServiceLayout>

@@ -1,0 +1,137 @@
+---
+/**
+ * Services Section Component (Astro)
+ * ===================================
+ * Asymmetric bento-box grid layout with featured service card.
+ * Uses shadcn/ui Card components and Lucide icons.
+ *
+ * Features:
+ * - Asymmetric 3-column grid with featured large card (Data Cleanup)
+ * - Bento-box style with varying card sizes
+ * - White card styling with subtle borders and shadows
+ * - Lucide outline icons for visual interest
+ * - Responsive: stacked on mobile, asymmetric on desktop
+ * - Links to individual service pages
+ */
+
+import { services } from '@/data/services';
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
+import { Palette, MessageSquare, LifeBuoy } from 'lucide-react';
+import AnimatedSection from '@/components/AnimatedSection.astro';
+
+export interface Props {
+  /** Section ID for anchor navigation */
+  id?: string;
+  /** Additional CSS classes */
+  class?: string;
+  /** Spread remaining HTML attributes */
+  [key: string]: unknown;
+}
+
+const { id = 'services', class: className, ...rest } = Astro.props;
+
+// Map icon identifiers to Lucide components
+// CUSTOMIZE: Update icons to match your services
+const iconMap: Record<string, typeof Palette> = {
+  'web-design': Palette,
+  'consulting': MessageSquare,
+  'support': LifeBuoy,
+};
+
+// Featured service is first (Data Cleanup)
+const featuredService = services[0];
+const otherServices = services.slice(1);
+---
+
+<section id={id} class:list={['pt-12 pb-16 lg:pt-16 lg:pb-24', className]} {...rest}>
+  <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+    <!-- Section Header -->
+    <AnimatedSection animation="fade-up" delay={0}>
+      <div class="text-center mb-8 sm:mb-12">
+        <h2 class="text-2xl sm:text-3xl lg:text-4xl font-serif font-semibold text-gray-900 dark:text-gray-100 leading-tight">
+          What We Do
+        </h2>
+        <p class="mt-4 text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+          Professional services tailored to your needs. Here's how we can help.
+        </p>
+      </div>
+    </AnimatedSection>
+
+    <!-- Bento-Box Asymmetric Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-6">
+      <!-- Featured Card: Data Cleanup (spans 2 cols, 2 rows on md+) -->
+      {(() => {
+        const IconComponent = iconMap[featuredService.icon] || Palette;
+        const serviceUrl = featuredService.slug ? `/services/${featuredService.slug}/` : '#';
+
+        return (
+          <AnimatedSection animation="scale" delay={100} class="md:col-span-2 md:row-span-2">
+            <a
+              href={serviceUrl}
+              class="group block h-full focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-2 rounded-xl"
+            >
+              <Card className="h-full bg-linear-to-br from-emerald-50 to-white dark:from-emerald-950 dark:to-gray-900 border border-emerald-200/60 dark:border-emerald-700/60 shadow-sm rounded-xl p-5 sm:p-8 transition-all duration-300 ease-out group-hover:shadow-xl group-hover:shadow-emerald-100/50 group-hover:border-emerald-300 group-hover:-translate-y-1.5">
+              <CardHeader className="p-0 pb-6">
+                <div class="flex flex-col gap-4">
+                  <div class="w-14 h-14 bg-linear-to-br from-emerald-100 via-emerald-50 to-teal-100 rounded-xl flex items-center justify-center shadow-sm shadow-emerald-200/50 ring-1 ring-emerald-200/30 transition-all duration-300 ease-out group-hover:scale-110 group-hover:rotate-3 group-hover:shadow-lg group-hover:shadow-teal-200/60 group-hover:from-emerald-200/80 group-hover:via-emerald-100 group-hover:to-teal-200/80">
+                    <IconComponent className="w-7 h-7 text-emerald-600 dark:text-emerald-400 drop-shadow-[0_1px_1px_rgba(20,184,166,0.3)] transition-all duration-300 group-hover:scale-105 group-hover:text-emerald-800 group-hover:drop-shadow-[0_2px_3px_rgba(20,184,166,0.4)]" />
+                  </div>
+                  <CardTitle className="text-xl sm:text-2xl lg:text-3xl font-serif font-semibold text-gray-900 dark:text-gray-100 leading-tight">
+                    {featuredService.title}
+                  </CardTitle>
+                </div>
+              </CardHeader>
+              <CardContent className="p-0">
+                <p class="text-gray-600 dark:text-gray-400 leading-relaxed text-lg lg:text-xl">
+                  {featuredService.description}
+                </p>
+                <div class="mt-6 flex items-center text-emerald-600 dark:text-emerald-400 font-medium group-hover:text-emerald-800">
+                  <span>Learn more</span>
+                  <svg class="w-5 h-5 ml-2 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                  </svg>
+                </div>
+              </CardContent>
+            </Card>
+          </a>
+        </AnimatedSection>
+        );
+      })()}
+
+      <!-- Smaller Cards: Stacked on right side with staggered animations -->
+      {otherServices.map((service, index) => {
+        const IconComponent = iconMap[service.icon] || Palette;
+        const serviceUrl = service.slug ? `/services/${service.slug}/` : '#';
+        // Stagger delay: 200ms base + 100ms per card
+        const staggerDelay = 200 + (index * 100);
+
+        return (
+          <AnimatedSection animation="slide-left" delay={staggerDelay}>
+            <a
+              href={serviceUrl}
+              class="group block h-full focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-2 rounded-xl"
+            >
+              <Card className="h-full bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 shadow-sm rounded-xl p-5 transition-all duration-300 ease-out group-hover:shadow-lg group-hover:border-emerald-200 group-hover:-translate-y-1 group-hover:bg-linear-to-br group-hover:from-white group-hover:to-emerald-50/40 dark:group-hover:to-emerald-950/40">
+              <CardHeader className="p-0 pb-3">
+                <div class="flex items-center gap-3">
+                  <div class="shrink-0 w-10 h-10 bg-linear-to-br from-gray-100 via-gray-50 to-slate-100 dark:from-gray-800 dark:via-gray-850 dark:to-gray-800 rounded-lg flex items-center justify-center ring-1 ring-gray-200/50 dark:ring-gray-700/50 shadow-sm shadow-gray-200/30 transition-all duration-300 ease-out group-hover:from-emerald-100 group-hover:via-emerald-50 group-hover:to-teal-100 group-hover:scale-110 group-hover:rotate-6 group-hover:shadow-md group-hover:shadow-teal-200/50 group-hover:ring-emerald-200/40">
+                    <IconComponent className="w-5 h-5 text-gray-600 dark:text-gray-400 drop-shadow-[0_0.5px_0.5px_rgba(100,116,139,0.2)] transition-all duration-300 group-hover:text-emerald-600 group-hover:scale-110 group-hover:drop-shadow-[0_1px_2px_rgba(20,184,166,0.35)]" />
+                  </div>
+                  <CardTitle className="text-base font-serif font-semibold text-gray-900 dark:text-gray-100 leading-tight">
+                    {service.title}
+                  </CardTitle>
+                </div>
+              </CardHeader>
+              <CardContent className="p-0">
+                <p class="text-gray-600 dark:text-gray-400 text-sm leading-relaxed">
+                  {service.description}
+                </p>
+              </CardContent>
+            </Card>
+          </a>
+        </AnimatedSection>
+        );
+      })}
+    </div>
+  </div>
+</section>

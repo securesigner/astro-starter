@@ -1,0 +1,328 @@
+---
+/**
+ * Hero Component
+ * =============================================
+ * Clean, minimal hero section for light theme design.
+ * Features:
+ * - Headline (h1) with optional accent word highlighting
+ * - Subheadline/description text
+ * - Optional CTA button with shadcn Button and Lucide icon
+ * - Clean, simple layout without decorative elements
+ *
+ * Usage:
+ *   <Hero
+ *     title="Your Data, Finally Making"
+ *     accent="Sense"
+ *     subtitle="We help small businesses untangle messy spreadsheets"
+ *     primaryCtaText="Let's Talk"
+ *     primaryCtaUrl="#contact"
+ *   />
+ */
+
+import { Button } from "@/components/ui/button";
+import { ArrowRight, ChevronDown } from "lucide-react";
+import AnimatedSection from "@/components/AnimatedSection.astro";
+
+export interface Props {
+  /** Main headline text (required) */
+  title: string;
+  /** Word to highlight with accent color (optional) */
+  accent?: string;
+  /** Subheading text below the title (optional) */
+  subtitle?: string;
+  /** Primary CTA button text (optional) */
+  primaryCtaText?: string;
+  /** Primary CTA button URL (optional) */
+  primaryCtaUrl?: string;
+  /** Section ID for anchor links (optional) */
+  id?: string;
+  /** Eyebrow text above headline (optional) */
+  eyebrow?: string;
+  /** Badge text (optional) */
+  badge?: string;
+  /** Deprecated props kept for backward compatibility */
+  variant?: string;
+  animated?: boolean;
+  showCircuitBg?: boolean;
+  showFloatingAccents?: boolean;
+}
+
+const {
+  title,
+  accent,
+  subtitle,
+  primaryCtaText,
+  primaryCtaUrl = "#",
+  id,
+  eyebrow,
+  badge,
+} = Astro.props;
+
+// Build title parts: if accent word is in title, split it; otherwise append it
+function renderTitle(title: string, accent?: string): { before: string; accent: string; after: string } | null {
+  if (!accent) return null;
+
+  // Check if accent word exists in title (for highlighting)
+  const parts = title.split(accent);
+  if (parts.length >= 2) {
+    return {
+      before: parts[0],
+      accent: accent,
+      after: parts.slice(1).join(accent),
+    };
+  }
+
+  // Accent word not in title - append it
+  return {
+    before: title + " ",
+    accent: accent,
+    after: "",
+  };
+}
+
+const titleParts = renderTitle(title, accent);
+---
+
+<section id={id} class="relative pt-16 pb-20 lg:pt-24 lg:pb-32 overflow-hidden">
+  {/* Decorative Gradient Blobs - repositioned for asymmetric layout */}
+  <div
+    class="absolute top-8 right-[5%] sm:right-[10%] w-48 h-48 sm:w-72 sm:h-72 md:w-96 md:h-96 lg:w-[500px] lg:h-[500px] bg-linear-to-br from-emerald-200/40 dark:from-emerald-800/20 to-teal-100/30 dark:to-teal-900/15 rounded-full blur-3xl pointer-events-none"
+    aria-hidden="true"
+  />
+  <div
+    class="absolute -bottom-20 left-[2%] sm:left-[5%] w-40 h-40 sm:w-64 sm:h-64 md:w-80 md:h-80 bg-linear-to-tr from-amber-100/50 dark:from-amber-900/25 to-orange-100/40 dark:to-orange-900/20 rounded-full blur-2xl pointer-events-none"
+    aria-hidden="true"
+  />
+  <div
+    class="absolute top-1/3 right-[15%] sm:right-[25%] w-32 h-32 sm:w-48 sm:h-48 bg-linear-to-br from-emerald-100/30 dark:from-emerald-800/15 to-cyan-100/20 dark:to-cyan-900/10 rounded-full blur-3xl pointer-events-none"
+    aria-hidden="true"
+  />
+
+  {/* Asymmetric Grid Layout */}
+  <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 lg:gap-12 items-center min-h-[50vh] sm:min-h-[60vh] lg:min-h-[70vh]">
+
+      {/* Main Content - Left Side (7 columns on desktop) */}
+      <div class="lg:col-span-7 text-left">
+        {/* Eyebrow Text */}
+        {eyebrow && (
+          <AnimatedSection animation="fade-up" delay={0} duration={500}>
+            <p class="text-sm font-medium uppercase tracking-wide text-emerald-600 dark:text-emerald-400 mb-4">
+              {eyebrow}
+            </p>
+          </AnimatedSection>
+        )}
+
+        {/* Badge */}
+        {badge && (
+          <AnimatedSection animation="fade-up" delay={0} duration={500}>
+            <span class="inline-block mb-4 px-3 py-1 text-sm font-medium text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950 rounded-full">
+              {badge}
+            </span>
+          </AnimatedSection>
+        )}
+
+        {/* Title with optional accent word */}
+        <AnimatedSection animation="fade-up" delay={100} duration={600}>
+          <h1 class="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-serif font-semibold text-gray-900 dark:text-gray-100 leading-tight mb-6">
+            {titleParts ? (
+              <>
+                {titleParts.before}
+                <span class="accent-word">
+                  <span class="accent-text">{titleParts.accent}</span>
+                  <svg
+                    class="accent-underline"
+                    viewBox="0 0 120 12"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                    aria-hidden="true"
+                    preserveAspectRatio="none"
+                  >
+                    <path
+                      d="M2 8C20 4 40 2 60 5C80 8 100 6 118 4"
+                      stroke="url(#accent-gradient)"
+                      stroke-width="3"
+                      stroke-linecap="round"
+                    />
+                    <defs>
+                      <linearGradient id="accent-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" stop-color="#059669" />
+                        <stop offset="50%" stop-color="#0d9488" />
+                        <stop offset="100%" stop-color="#14b8a6" />
+                      </linearGradient>
+                    </defs>
+                  </svg>
+                </span>
+                {titleParts.after}
+              </>
+            ) : (
+              title
+            )}
+          </h1>
+        </AnimatedSection>
+
+        {/* Subtitle */}
+        {subtitle && (
+          <AnimatedSection animation="fade-up" delay={200} duration={500}>
+            <p class="text-lg sm:text-xl text-gray-600 dark:text-gray-400 mt-4 max-w-xl">
+              {subtitle}
+            </p>
+          </AnimatedSection>
+        )}
+
+        {/* CTA Button */}
+        {primaryCtaText && (
+          <AnimatedSection animation="fade-up" delay={300} duration={500}>
+            <div class="mt-8 sm:mt-10">
+              <Button
+                asChild
+                size="lg"
+                className="min-h-[44px] px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-medium bg-linear-to-r from-emerald-600 via-teal-600 to-emerald-600 hover:from-emerald-500 hover:via-teal-500 hover:to-emerald-500 text-white shadow-lg shadow-emerald-500/25 hover:shadow-xl hover:shadow-emerald-500/30 transition-all duration-300 hover:-translate-y-0.5 group"
+              >
+                <a href={primaryCtaUrl}>
+                  {primaryCtaText}
+                  <ArrowRight className="ml-2 h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" />
+                </a>
+              </Button>
+            </div>
+          </AnimatedSection>
+        )}
+
+        {/* Slot for additional content */}
+        <slot />
+      </div>
+
+      {/* Decorative Right Side (5 columns on desktop) */}
+      <div class="hidden lg:flex lg:col-span-5 items-center justify-center relative" aria-hidden="true">
+        {/* Abstract decorative pattern */}
+        <div class="relative w-full h-80">
+          {/* Floating geometric elements */}
+          <div class="absolute top-0 right-8 w-32 h-32 border-2 border-emerald-200/60 dark:border-emerald-700/30 rounded-2xl rotate-12 animate-float-slow"></div>
+          <div class="absolute top-16 right-32 w-24 h-24 bg-linear-to-br from-emerald-100/50 dark:from-emerald-800/25 to-teal-100/40 dark:to-teal-900/20 rounded-full"></div>
+          <div class="absolute bottom-8 right-16 w-40 h-40 border-2 border-teal-200/50 dark:border-teal-700/25 rounded-full -rotate-6 animate-float-slower"></div>
+          <div class="absolute bottom-24 right-48 w-16 h-16 bg-linear-to-br from-amber-100/60 dark:from-amber-900/30 to-orange-100/50 dark:to-orange-900/25 rounded-lg rotate-45"></div>
+
+          {/* Diagonal decorative lines */}
+          <svg class="absolute inset-0 w-full h-full opacity-30" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M20 180 L180 20" stroke="url(#line-gradient)" stroke-width="1" stroke-dasharray="8 4"/>
+            <path d="M40 180 L180 40" stroke="url(#line-gradient)" stroke-width="1" stroke-dasharray="8 4"/>
+            <path d="M60 180 L180 60" stroke="url(#line-gradient)" stroke-width="1" stroke-dasharray="8 4"/>
+            <defs>
+              <linearGradient id="line-gradient" x1="0%" y1="100%" x2="100%" y2="0%">
+                <stop offset="0%" stop-color="#059669" stop-opacity="0.3"/>
+                <stop offset="100%" stop-color="#14b8a6" stop-opacity="0.1"/>
+              </linearGradient>
+            </defs>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {/* Scroll Indicator - Decorative visual cue for users to scroll */}
+  <div class="scroll-indicator absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1" aria-hidden="true">
+    <span class="text-xs font-medium uppercase tracking-widest text-gray-400 dark:text-gray-500">Scroll</span>
+    <ChevronDown className="h-5 w-5 text-gray-400 animate-bounce" />
+  </div>
+</section>
+
+<style>
+  /* Accent word container */
+  .accent-word {
+    position: relative;
+    display: inline-block;
+  }
+
+  /* Gradient text effect */
+  .accent-text {
+    background: linear-gradient(135deg, #059669 0%, #0d9488 50%, #14b8a6 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* SVG underline decoration */
+  .accent-underline {
+    position: absolute;
+    bottom: -0.1em;
+    left: 0;
+    width: 100%;
+    height: 0.15em;
+    opacity: 0;
+    animation: underline-fade-in 0.8s ease-out 0.4s forwards;
+  }
+
+  /* Fade-in animation for the underline */
+  @keyframes underline-fade-in {
+    from {
+      opacity: 0;
+      transform: scaleX(0.8);
+    }
+    to {
+      opacity: 1;
+      transform: scaleX(1);
+    }
+  }
+
+  /* Subtle hover effect */
+  .accent-word:hover .accent-underline {
+    animation: underline-wave 1.5s ease-in-out infinite;
+  }
+
+  @keyframes underline-wave {
+    0%, 100% {
+      transform: scaleX(1);
+    }
+    50% {
+      transform: scaleX(1.05);
+    }
+  }
+
+  /* Floating animations for decorative elements */
+  .animate-float-slow {
+    animation: float-slow 6s ease-in-out infinite;
+  }
+
+  .animate-float-slower {
+    animation: float-slower 8s ease-in-out infinite;
+  }
+
+  @keyframes float-slow {
+    0%, 100% {
+      transform: translateY(0) rotate(12deg);
+    }
+    50% {
+      transform: translateY(-12px) rotate(12deg);
+    }
+  }
+
+  @keyframes float-slower {
+    0%, 100% {
+      transform: translateY(0) rotate(-6deg);
+    }
+    50% {
+      transform: translateY(-8px) rotate(-6deg);
+    }
+  }
+
+  /* Respect reduced motion preference */
+  @media (prefers-reduced-motion: reduce) {
+    .animate-float-slow,
+    .animate-float-slower {
+      animation: none;
+    }
+
+    .scroll-indicator :global(.animate-bounce) {
+      animation: none;
+    }
+
+    .accent-underline {
+      animation: none;
+      opacity: 1;
+    }
+
+    .accent-word:hover .accent-underline {
+      animation: none;
+    }
+  }
+</style>

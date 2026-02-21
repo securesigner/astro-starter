@@ -1,0 +1,123 @@
+---
+/**
+ * Navigation Component (Astro)
+ * ============================
+ * Clean horizontal navigation bar with light theme styling.
+ * Mobile navigation is handled by MobileBottomNav component.
+ *
+ * Converted from Nav.tsx to eliminate React dependency on every page.
+ * Hash-based active state (#contact) handled via inline script.
+ *
+ * Usage:
+ *   import Nav from '@/components/Nav.astro';
+ *   <Nav currentPath={Astro.url.pathname} />
+ */
+
+import { headerNav } from "@/data/navigation";
+import { SITE } from "@/data/site";
+import ThemeToggle from "@/components/ThemeToggle";
+
+interface Props {
+  currentPath?: string;
+  siteTitle?: string;
+}
+
+const { currentPath = "/", siteTitle = SITE.title } = Astro.props;
+
+/** Check if a link is active (build-time, excludes hash-based links) */
+function isActiveLink(url: string): boolean {
+  if (url === "/#contact") {
+    // Hash links are handled client-side — never active at build time
+    return false;
+  }
+  if (url !== "/" && currentPath.startsWith(url.replace(/\/$/, ""))) {
+    return true;
+  }
+  return currentPath === url;
+}
+---
+
+<header class="fixed top-0 left-0 right-0 z-50 border-b border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950">
+  <nav class="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
+    {/* Logo */}
+    <a
+      href="/"
+      class="focus-ring flex items-center transition-opacity duration-150 hover:opacity-80 rounded-sm"
+      aria-label={`${siteTitle} - Home`}
+    >
+      <img
+        src="/assets/images/logo.png"
+        alt={siteTitle}
+        class="h-10 w-auto"
+        width="143"
+        height="80"
+        loading="eager"
+        decoding="async"
+      />
+    </a>
+
+    {/* Desktop Navigation Menu - visible on md and up */}
+    <nav
+      class="hidden items-center gap-6 md:flex"
+      aria-label="Primary navigation"
+    >
+      {headerNav.map((link) => (
+        <a
+          href={link.url}
+          class:list={[
+            "focus-ring text-sm font-medium transition-colors duration-150 rounded-sm",
+            isActiveLink(link.url)
+              ? "text-emerald-600 dark:text-emerald-400"
+              : "text-gray-600 dark:text-gray-400 hover:text-emerald-800 dark:hover:text-emerald-300",
+          ]}
+          aria-current={isActiveLink(link.url) ? "page" : undefined}
+          data-nav-url={link.url}
+        >
+          {link.title}
+        </a>
+      ))}
+      <ThemeToggle client:idle />
+    </nav>
+  </nav>
+</header>
+
+<script is:inline>
+  // Update nav link active states on page load and View Transitions
+  // Uses astro:page-load (fires on initial load + after View Transition navigations)
+  (function () {
+    var ACTIVE = ["text-emerald-600", "dark:text-emerald-400"];
+    var INACTIVE = ["text-gray-600", "dark:text-gray-400", "hover:text-emerald-800", "dark:hover:text-emerald-300"];
+
+    function isActive(linkUrl, path, hash) {
+      if (linkUrl === "/#contact") {
+        return path === "/" && hash === "#contact";
+      }
+      if (linkUrl !== "/" && path.replace(/\/$/, "").indexOf(linkUrl.replace(/\/$/, "")) === 0) {
+        return true;
+      }
+      return path === linkUrl || path.replace(/\/$/, "") === linkUrl.replace(/\/$/, "");
+    }
+
+    function updateNavLinks() {
+      var path = window.location.pathname;
+      var hash = window.location.hash;
+      var links = document.querySelectorAll("[data-nav-url]");
+      for (var i = 0; i < links.length; i++) {
+        var link = links[i];
+        var url = link.getAttribute("data-nav-url");
+        if (isActive(url, path, hash)) {
+          link.classList.remove.apply(link.classList, INACTIVE);
+          link.classList.add.apply(link.classList, ACTIVE);
+          link.setAttribute("aria-current", "page");
+        } else {
+          link.classList.remove.apply(link.classList, ACTIVE);
+          link.classList.add.apply(link.classList, INACTIVE);
+          link.removeAttribute("aria-current");
+        }
+      }
+    }
+
+    document.addEventListener("astro:page-load", updateNavLinks);
+    window.addEventListener("hashchange", updateNavLinks);
+  })();
+</script>

@@ -1,0 +1,53 @@
+### Astro (build artifacts)
+dist/
+.astro/
+
+### Node
+node_modules/
+.npm/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.pnpm-store/
+
+
+### Playwright
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+/playwright/.auth/
+report.json
+**/visual.spec.ts-snapshots/
+archive/
+
+### Coverage / test runner outputs (future-proofing)
+coverage/
+.nyc_output/
+junit*.xml
+
+### Lighthouse CI (local reports, uploaded as artifacts in CI)
+.lighthouseci/
+
+### Copilot Hooks (local logs)
+.copilot-logs/
+
+### Environment variables
+.env
+.env.*
+!.env.example
+
+### Distribution artifacts
+*.zip
+
+### OS & editor
+.DS_Store
+Thumbs.db
+._*
+*.swp
+*~
+.vscode/
+!.vscode/extensions.json
+.idea/
+

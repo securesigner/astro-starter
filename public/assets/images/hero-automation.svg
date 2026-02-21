@@ -1,0 +1,76 @@
+<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" class="hero-automation">
+  <!--
+    SVG gradient stop-color requires hardcoded values (CSS vars not supported in stop elements).
+    Colors match design tokens: accent-primary (#8b5cf6), accent-secondary (#06b6d4), accent-tertiary (#ec4899)
+  -->
+  <defs>
+    <!-- Main gradient for lines -->
+    <linearGradient id="hero-line-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#8b5cf6"/>
+      <stop offset="100%" stop-color="#06b6d4"/>
+    </linearGradient>
+
+    <!-- Radial glow for nodes -->
+    <radialGradient id="node-glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#8b5cf6" stop-opacity="0.8"/>
+      <stop offset="100%" stop-color="#8b5cf6" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Filter for subtle glow effect -->
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="2" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Connection lines (behind nodes) -->
+  <g class="hero-automation__lines" stroke="url(#hero-line-grad)" stroke-width="1.5" fill="none" opacity="0.6">
+    <!-- Center to top-right -->
+    <line x1="100" y1="100" x2="155" y2="55" class="hero-automation__line hero-automation__line--1"/>
+    <!-- Center to bottom-left -->
+    <line x1="100" y1="100" x2="50" y2="140" class="hero-automation__line hero-automation__line--2"/>
+    <!-- Center to left -->
+    <line x1="100" y1="100" x2="45" y2="70" class="hero-automation__line hero-automation__line--3"/>
+    <!-- Top-right to left (arc effect) -->
+    <path d="M155 55 Q 100 30 45 70" class="hero-automation__line hero-automation__line--4"/>
+  </g>
+
+  <!-- Outer nodes (smaller) -->
+  <g class="hero-automation__nodes-outer">
+    <!-- Top-right node -->
+    <circle cx="155" cy="55" r="12" fill="url(#node-glow)" class="hero-automation__node-glow"/>
+    <circle cx="155" cy="55" r="6" style="fill: #06b6d4" filter="url(#glow)" class="hero-automation__node hero-automation__node--1"/>
+
+    <!-- Bottom-left node -->
+    <circle cx="50" cy="140" r="10" fill="url(#node-glow)" class="hero-automation__node-glow"/>
+    <circle cx="50" cy="140" r="5" style="fill: #ec4899" filter="url(#glow)" class="hero-automation__node hero-automation__node--2"/>
+
+    <!-- Left node -->
+    <circle cx="45" cy="70" r="10" fill="url(#node-glow)" class="hero-automation__node-glow"/>
+    <circle cx="45" cy="70" r="5" style="fill: #8b5cf6" filter="url(#glow)" class="hero-automation__node hero-automation__node--3"/>
+  </g>
+
+  <!-- Central hub (larger, main focus) -->
+  <g class="hero-automation__hub">
+    <circle cx="100" cy="100" r="20" fill="url(#node-glow)" class="hero-automation__hub-glow"/>
+    <circle cx="100" cy="100" r="10" style="fill: #8b5cf6" filter="url(#glow)" class="hero-automation__hub-core"/>
+    <!-- Inner ring -->
+    <circle cx="100" cy="100" r="16" stroke="url(#hero-line-grad)" stroke-width="1" fill="none" opacity="0.5" class="hero-automation__hub-ring"/>
+  </g>
+
+  <!-- Data pulse dots (animated particles traveling along lines) -->
+  <g class="hero-automation__pulses">
+    <circle r="2" style="fill: #06b6d4" class="hero-automation__pulse hero-automation__pulse--1">
+      <animateMotion dur="3s" repeatCount="indefinite" path="M100 100 L155 55" calcMode="linear"/>
+    </circle>
+    <circle r="2" style="fill: #ec4899" class="hero-automation__pulse hero-automation__pulse--2">
+      <animateMotion dur="4s" repeatCount="indefinite" path="M100 100 L50 140" calcMode="linear"/>
+    </circle>
+    <circle r="2" style="fill: #8b5cf6" class="hero-automation__pulse hero-automation__pulse--3">
+      <animateMotion dur="3.5s" repeatCount="indefinite" path="M100 100 L45 70" calcMode="linear"/>
+    </circle>
+  </g>
+</svg>

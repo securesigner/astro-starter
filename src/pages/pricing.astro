@@ -1,0 +1,369 @@
+---
+/**
+ * Pricing Page
+ * ============
+ * CUSTOMIZE: Update packages, pricing models, and FAQ content.
+ * Shows packages without specific prices; leads to contact form.
+ */
+
+import Layout from "@/layouts/Layout.astro";
+import CTASection from "@/components/CTASection.astro";
+import ContactForm from "@/components/ContactForm.tsx";
+import SectionHeading from "@/components/SectionHeading.astro";
+import SectionConnector from "@/components/SectionConnector.astro";
+import PageBackground from "@/components/PageBackground.astro";
+import AnimatedSection from "@/components/AnimatedSection.astro";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import {
+  Stethoscope,
+  FileSearch,
+  Sparkles,
+  Link2,
+  LayoutDashboard,
+  ArrowRightLeft,
+  Clock,
+  Target,
+} from "lucide-react";
+
+// Page metadata
+const title = "Custom Pricing";
+const description =
+  "Every business is different. We scope projects based on your unique data challenges and goals—no cookie-cutter packages.";
+
+// Package data with icons (no prices)
+const packages = [
+  {
+    name: "Data Health Check",
+    description: "Audit of your key spreadsheet with written recommendations and a 30-minute debrief to prioritize next steps.",
+    outcome: "Clear picture of what needs fixing",
+    icon: Stethoscope,
+    featured: false,
+  },
+  {
+    name: "Spreadsheet Review",
+    description: "Full review of up to 5 connected spreadsheets. We identify errors, inconsistencies, and deliver a documented fix plan.",
+    outcome: "Know exactly where the problems are",
+    icon: FileSearch,
+    featured: false,
+  },
+  {
+    name: "Data Cleanup Sprint",
+    description: "One-week intensive: duplicate removal, format standardization, validation rules, and before/after documentation.",
+    outcome: "Clean files you can trust",
+    icon: Sparkles,
+    featured: true,
+  },
+  {
+    name: "System Integration",
+    description: "Connect 2–3 tools (CRM, accounting, forms) with automated data flow, error handling, and training.",
+    outcome: "No more copy-pasting between systems",
+    icon: Link2,
+    featured: false,
+  },
+  {
+    name: "Dashboard Build",
+    description: "Custom metrics dashboard in Google Sheets or Airtable with training so your team can maintain it.",
+    outcome: "Your key numbers in one view",
+    icon: LayoutDashboard,
+    featured: false,
+  },
+  {
+    name: "Full Data Migration",
+    description: "End-to-end data cleanup, new system setup, comprehensive documentation, and hands-on training.",
+    outcome: "Everything organized, documented, and working",
+    icon: ArrowRightLeft,
+    featured: false,
+  },
+];
+
+// Simplified FAQ data
+const faqs = [
+  {
+    question: "How does pricing work?",
+    answer:
+      "Every project is scoped individually based on your situation. After a discovery call, you'll receive a clear quote with no surprises.",
+  },
+  {
+    question: "What's the typical timeline?",
+    answer:
+      "Quick audits take a few days. Data cleanup sprints run about a week. Larger migrations and integrations typically span a few weeks depending on scope.",
+  },
+  {
+    question: "What if I'm not sure what I need?",
+    answer:
+      "That's completely normal. Start with a free discovery call—we'll help you figure out what makes sense and tell you honestly if we're not the right fit.",
+  },
+];
+
+// Featured package for the large card
+const featuredPackage = packages.find((p) => p.featured);
+const otherPackages = packages.filter((p) => !p.featured);
+---
+
+<Layout title={title} description={description}>
+  <!-- FAQ Schema Structured Data -->
+  <Fragment slot="head">
+    <script
+      is:inline
+      type="application/ld+json"
+      set:html={JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": faqs.map((faq) => ({
+          "@type": "Question",
+          "name": faq.question,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": faq.answer,
+          },
+        })),
+      })}
+    />
+  </Fragment>
+
+  <PageBackground>
+    <main>
+      <!-- ================================================================
+           HERO SECTION: Custom pricing introduction
+      ================================================================= -->
+      <section class="relative pt-24 pb-16 lg:pt-32 lg:pb-20 overflow-hidden">
+        <!-- Decorative gradient blobs -->
+        <div class="absolute top-0 right-0 w-96 h-96 bg-linear-to-br from-emerald-100/40 dark:from-emerald-800/20 to-teal-50/20 dark:to-teal-900/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3 pointer-events-none" aria-hidden="true"></div>
+        <div class="absolute bottom-0 left-0 w-72 h-72 bg-linear-to-tr from-amber-50/30 dark:from-amber-900/15 to-emerald-50/20 dark:to-emerald-900/10 rounded-full blur-2xl translate-y-1/3 -translate-x-1/4 pointer-events-none" aria-hidden="true"></div>
+
+        <div class="relative max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <AnimatedSection animation="fade-up" delay={0}>
+            <p class="text-sm font-medium text-emerald-600 dark:text-emerald-400 tracking-wide uppercase mb-4">
+              Investment & Pricing
+            </p>
+            <h1 class="text-4xl sm:text-5xl lg:text-6xl font-serif font-semibold text-gray-900 dark:text-gray-100 leading-tight mb-6">
+              Custom Solutions,<br />
+              <span class="text-emerald-600 dark:text-emerald-400">Fair Pricing</span>
+            </h1>
+            <p class="text-lg sm:text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto leading-relaxed">
+              Every business has unique data challenges. We scope each project individually so you pay for exactly what you need—nothing more.
+            </p>
+          </AnimatedSection>
+        </div>
+      </section>
+
+      <!-- Visual connector: Hero → How We Work -->
+      <SectionConnector variant="wave" color="warm" />
+
+      <!-- ================================================================
+           HOW WE WORK SECTION: Value-focused approach
+      ================================================================= -->
+      <section class="pt-16 pb-12 lg:pt-20 lg:pb-16 bg-linear-to-b from-amber-50/30 dark:from-amber-950/30 to-white dark:to-gray-950">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+          <AnimatedSection animation="fade-up" delay={0}>
+            <SectionHeading
+              title="How We Work"
+              subtitle="Transparent scoping, predictable outcomes"
+              align="center"
+              class="mb-12"
+            />
+          </AnimatedSection>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <AnimatedSection animation="fade-up" delay={100}>
+              <Card className="h-full bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 shadow-sm rounded-xl p-6 transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
+                <CardHeader className="p-0 pb-4">
+                  <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 bg-linear-to-br from-emerald-100 dark:from-emerald-900 to-teal-50 dark:to-teal-950 rounded-xl flex items-center justify-center ring-1 ring-emerald-200/50 dark:ring-emerald-700/50">
+                      <Clock className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />
+                    </div>
+                    <CardTitle className="text-xl font-serif font-semibold text-gray-900 dark:text-gray-100">
+                      Hourly Support
+                    </CardTitle>
+                  </div>
+                </CardHeader>
+                <CardContent className="p-0">
+                  <p class="text-gray-600 dark:text-gray-400 leading-relaxed">
+                    For exploratory work, quick fixes, or projects where scope is hard to define upfront. Billed in 15-minute increments with no surprises.
+                  </p>
+                  <p class="text-sm text-gray-500 dark:text-gray-400 mt-4 italic">
+                    Typical uses: Data audits, troubleshooting, training sessions.
+                  </p>
+                </CardContent>
+              </Card>
+            </AnimatedSection>
+
+            <AnimatedSection animation="fade-up" delay={200}>
+              <Card className="h-full bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 shadow-sm rounded-xl p-6 transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
+                <CardHeader className="p-0 pb-4">
+                  <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 bg-linear-to-br from-emerald-100 dark:from-emerald-900 to-teal-50 dark:to-teal-950 rounded-xl flex items-center justify-center ring-1 ring-emerald-200/50 dark:ring-emerald-700/50">
+                      <Target className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />
+                    </div>
+                    <CardTitle className="text-xl font-serif font-semibold text-gray-900 dark:text-gray-100">
+                      Fixed-Scope Projects
+                    </CardTitle>
+                  </div>
+                </CardHeader>
+                <CardContent className="p-0">
+                  <p class="text-gray-600 dark:text-gray-400 leading-relaxed">
+                    For defined deliverables with clear outcomes. Price is set upfront after a discovery call—you know exactly what you're paying before work begins.
+                  </p>
+                  <p class="text-sm text-gray-500 dark:text-gray-400 mt-4 italic">
+                    Typical uses: Spreadsheet cleanup, file organization, dashboard builds.
+                  </p>
+                </CardContent>
+              </Card>
+            </AnimatedSection>
+          </div>
+        </div>
+      </section>
+
+      <!-- Visual connector: How We Work → Packages -->
+      <SectionConnector variant="curve" color="neutral" />
+
+      <!-- ================================================================
+           PACKAGES SECTION: Bento grid with service cards
+      ================================================================= -->
+      <section class="pt-12 pb-16 lg:pt-16 lg:pb-24">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+          <AnimatedSection animation="fade-up" delay={0}>
+            <SectionHeading
+              title="What We Offer"
+              subtitle="Choose a starting point—we'll customize to fit your needs"
+              align="center"
+              class="mb-12"
+            />
+          </AnimatedSection>
+
+          <!-- Bento Grid -->
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-6">
+            <!-- Featured Card: Data Cleanup Sprint (spans 2 cols, 2 rows) -->
+            {featuredPackage && (() => {
+              const IconComponent = featuredPackage.icon;
+              return (
+                <AnimatedSection animation="scale" delay={100} class="md:col-span-2 md:row-span-2">
+                  <Card className="h-full bg-linear-to-br from-emerald-50 dark:from-emerald-950 to-white dark:to-gray-900 border border-emerald-200/60 dark:border-emerald-700/60 shadow-sm rounded-xl p-6 sm:p-8 transition-all duration-300 hover:shadow-xl hover:shadow-emerald-100/50 dark:hover:shadow-emerald-900/50 hover:border-emerald-300 dark:hover:border-emerald-600 hover:-translate-y-1.5 group">
+                    <CardHeader className="p-0 pb-6">
+                      <div class="flex flex-col gap-4">
+                        <div class="w-14 h-14 bg-linear-to-br from-emerald-100 dark:from-emerald-900 via-emerald-50 dark:via-emerald-950 to-teal-100 dark:to-teal-900 rounded-xl flex items-center justify-center shadow-sm shadow-emerald-200/50 dark:shadow-emerald-800/50 ring-1 ring-emerald-200/30 dark:ring-emerald-700/30 transition-all duration-300 group-hover:scale-110 group-hover:rotate-3">
+                          <IconComponent className="w-7 h-7 text-emerald-600 dark:text-emerald-400 transition-all duration-300 group-hover:text-emerald-800 dark:group-hover:text-emerald-200" />
+                        </div>
+                        <div>
+                          <span class="inline-block text-xs font-medium text-emerald-600 dark:text-emerald-400 bg-emerald-100 dark:bg-emerald-900 px-2 py-1 rounded-full mb-2">Most Popular</span>
+                          <CardTitle className="text-2xl lg:text-3xl font-serif font-semibold text-gray-900 dark:text-gray-100 leading-tight">
+                            {featuredPackage.name}
+                          </CardTitle>
+                        </div>
+                      </div>
+                    </CardHeader>
+                    <CardContent className="p-0">
+                      <p class="text-gray-600 dark:text-gray-400 leading-relaxed text-lg lg:text-xl mb-4">
+                        {featuredPackage.description}
+                      </p>
+                      <p class="text-emerald-700 dark:text-emerald-400 font-medium flex items-center gap-2">
+                        <span class="w-1.5 h-1.5 bg-emerald-500 rounded-full"></span>
+                        {featuredPackage.outcome}
+                      </p>
+                    </CardContent>
+                  </Card>
+                </AnimatedSection>
+              );
+            })()}
+
+            <!-- Other Package Cards -->
+            {otherPackages.map((pkg, index) => {
+              const IconComponent = pkg.icon;
+              return (
+                <AnimatedSection animation="fade-up" delay={150 + index * 50}>
+                  <Card className="h-full bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 shadow-sm rounded-xl p-5 transition-all duration-300 hover:shadow-lg hover:shadow-emerald-50/50 dark:hover:shadow-emerald-900/50 hover:border-emerald-200 dark:hover:border-emerald-700 hover:-translate-y-1 group">
+                    <CardHeader className="p-0 pb-3">
+                      <div class="flex items-start gap-3">
+                        <div class="w-10 h-10 bg-linear-to-br from-gray-100 dark:from-gray-800 to-gray-50 dark:to-gray-900 rounded-lg flex items-center justify-center ring-1 ring-gray-200/50 dark:ring-gray-700/50 transition-all duration-300 group-hover:from-emerald-100 group-hover:to-teal-50 group-hover:ring-emerald-200/50">
+                          <IconComponent className="w-5 h-5 text-gray-600 dark:text-gray-400 transition-colors group-hover:text-emerald-600" />
+                        </div>
+                        <CardTitle className="text-lg font-serif font-semibold text-gray-900 dark:text-gray-100 leading-tight pt-1.5">
+                          {pkg.name}
+                        </CardTitle>
+                      </div>
+                    </CardHeader>
+                    <CardContent className="p-0">
+                      <p class="text-gray-600 dark:text-gray-400 text-sm leading-relaxed mb-3">
+                        {pkg.description}
+                      </p>
+                      <p class="text-emerald-700 dark:text-emerald-400 text-sm font-medium flex items-center gap-2">
+                        <span class="w-1 h-1 bg-emerald-500 rounded-full"></span>
+                        {pkg.outcome}
+                      </p>
+                    </CardContent>
+                  </Card>
+                </AnimatedSection>
+              );
+            })}
+          </div>
+
+          <AnimatedSection animation="fade-up" delay={500}>
+            <p class="text-center text-gray-500 dark:text-gray-400 text-sm mt-8 italic">
+              Every project is scoped to your specific needs. These are starting points—your quote will reflect your actual requirements.
+            </p>
+          </AnimatedSection>
+        </div>
+      </section>
+
+      <!-- Visual connector: Packages → FAQ -->
+      <SectionConnector variant="wave" color="neutral" flip />
+
+      <!-- ================================================================
+           FAQ SECTION
+      ================================================================= -->
+      <section class="pt-12 pb-16 lg:pt-16 lg:pb-20">
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+          <AnimatedSection animation="fade-up" delay={0}>
+            <SectionHeading
+              title="Common Questions"
+              align="center"
+              class="mb-10"
+            />
+          </AnimatedSection>
+
+          <div class="space-y-4">
+            {faqs.map((faq, index) => (
+              <AnimatedSection animation="fade-up" delay={100 + index * 100}>
+                <Card className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 shadow-sm rounded-xl p-6 transition-all duration-300 hover:shadow-md">
+                  <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">{faq.question}</h3>
+                  <p class="text-gray-600 dark:text-gray-400 leading-relaxed">{faq.answer}</p>
+                </Card>
+              </AnimatedSection>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <!-- Visual connector: FAQ → Contact -->
+      <SectionConnector variant="gradient-fade" color="cool" />
+
+      <!-- ================================================================
+           CONTACT FORM SECTION
+      ================================================================= -->
+      <section id="contact" class="pt-16 pb-12 lg:pt-24 lg:pb-16 bg-white dark:bg-gray-950">
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+          <SectionHeading
+            title="Get Custom Pricing"
+            size="lg"
+            align="center"
+            subtitle="Tell us about your data challenges and we'll put together a proposal that fits your budget and timeline."
+            class="mb-12"
+          />
+          <div class="max-w-2xl mx-auto">
+            <ContactForm client:visible />
+          </div>
+        </div>
+      </section>
+
+      <!-- ================================================================
+           CTA SECTION
+      ================================================================= -->
+      <CTASection
+        headline="Not sure where to start?"
+        description="A quick call helps us understand your situation and point you in the right direction—no charge, no commitment."
+        primaryText="Get My Free Assessment"
+        primaryUrl="/contact/"
+      />
+    </main>
+  </PageBackground>
+</Layout>

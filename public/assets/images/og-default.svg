@@ -1,0 +1,50 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#312450"/>
+      <stop offset="50%" style="stop-color:#5e42a6"/>
+      <stop offset="100%" style="stop-color:#5052b5"/>
+    </linearGradient>
+    <linearGradient id="accentGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#5e42a6"/>
+      <stop offset="100%" style="stop-color:#b74e91"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#bgGradient)"/>
+  
+  <!-- Decorative Elements -->
+  <circle cx="1100" cy="100" r="200" fill="#5e42a6" opacity="0.3"/>
+  <circle cx="100" cy="530" r="150" fill="#b74e91" opacity="0.2"/>
+  <circle cx="900" cy="500" r="100" fill="#5052b5" opacity="0.25"/>
+  
+  <!-- Accent Bar -->
+  <rect x="100" y="260" width="80" height="6" rx="3" fill="url(#accentGradient)"/>
+  
+  <!-- Main Title -->
+  <text x="100" y="330" font-family="Segoe UI, Roboto, Helvetica Neue, Arial, sans-serif" font-size="72" font-weight="bold" fill="#ffffff">
+    YOUR
+  </text>
+  <text x="100" y="410" font-family="Segoe UI, Roboto, Helvetica Neue, Arial, sans-serif" font-size="72" font-weight="bold" fill="#ffffff">
+    BUSINESS
+  </text>
+  
+  <!-- Tagline -->
+  <text x="100" y="480" font-family="Segoe UI, Roboto, Helvetica Neue, Arial, sans-serif" font-size="28" fill="#ddd4ed">
+    Practical data intelligence for PNW businesses &amp; nonprofits
+  </text>
+  
+  <!-- Website URL -->
+  <text x="100" y="560" font-family="Segoe UI, Roboto, Helvetica Neue, Arial, sans-serif" font-size="22" fill="#ddd4ed" opacity="0.8">
+    yourdomain.com
+  </text>
+  
+  <!-- Compass/North Arrow Icon -->
+  <g transform="translate(950, 280)">
+    <circle cx="75" cy="75" r="70" fill="none" stroke="#ddd4ed" stroke-width="2" opacity="0.3"/>
+    <polygon points="75,15 85,75 75,60 65,75" fill="#ffffff"/>
+    <polygon points="75,135 85,75 75,90 65,75" fill="#ddd4ed" opacity="0.5"/>
+    <text x="75" y="5" font-family="Segoe UI, sans-serif" font-size="14" fill="#ddd4ed" text-anchor="middle" opacity="0.6">N</text>
+  </g>
+</svg>

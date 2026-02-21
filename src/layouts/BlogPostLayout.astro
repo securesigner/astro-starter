@@ -1,0 +1,519 @@
+---
+/**
+ * Blog Post Layout (Astro)
+ * ========================
+ * Layout for blog posts with full semantic structure.
+ * Extends the base Layout and provides:
+ * - Post header with title, date, author, reading time
+ * - Category and tag display
+ * - h-entry microformats for IndieWeb compatibility
+ * - Schema.org BlogPosting structured data
+ * - Prose typography styling for content
+ *
+ * Migrated from: _layouts/post.html
+ *
+ * Usage:
+ *   <BlogPostLayout
+ *     title="Post Title"
+ *     date={new Date('2026-01-15')}
+ *     author="Author Name"
+ *     categories={['Category1']}
+ *     tags={['tag1', 'tag2']}
+ *     content={post.body}
+ *   >
+ *     <Content />
+ *   </BlogPostLayout>
+ *
+ * Props:
+ *   - title: Post title (required)
+ *   - date: Publication date (required)
+ *   - author: Author display name
+ *   - categories: Array of category strings
+ *   - tags: Array of tag strings
+ *   - excerpt: Post excerpt for meta description
+ *   - description: Alternative to excerpt
+ *   - image: Featured image object {src, alt}
+ *   - schema_type: Schema.org type (default: 'BlogPosting')
+ *   - last_modified_at: Last modified date
+ *   - content: Raw markdown for reading time calculation
+ */
+
+import Layout from "./Layout.astro";
+import { Badge } from "../components/ui/badge";
+import { Image } from 'astro:assets';
+import { SITE } from "@/data/site";
+import PageBackground from "../components/PageBackground.astro";
+import { getCollection } from 'astro:content';
+import RelatedPosts from "../components/RelatedPosts.astro";
+import Breadcrumbs from "../components/Breadcrumbs.astro";
+import CTASection from "../components/CTASection.astro";
+import { formatDate, formatDateISO, calculateReadingTime } from "../lib/utils";
+
+// Props interface matching the blog content schema
+interface Props {
+  title: string;
+  date: Date;
+  author?: string;
+  categories?: string[];
+  tags?: string[];
+  excerpt?: string;
+  description?: string;
+  image?: {
+    src: string;
+    alt?: string;
+  };
+  /**
+   * Custom Open Graph image for social sharing.
+   * Path should be relative to public folder, e.g., "/assets/images/og/post-slug.png"
+   */
+  ogImage?: string;
+  schema_type?: string;
+  last_modified_at?: Date;
+  draft?: boolean;
+  content?: string; // Raw markdown content for reading time calculation
+  /** Current post slug for filtering related posts */
+  currentSlug?: string;
+  /** Related service slug for contextual CTA */
+  relatedService?: string;
+}
+
+const {
+  title,
+  date,
+  author = SITE.author,
+  categories = [],
+  tags = [],
+  excerpt,
+  description,
+  image,
+  ogImage: customOgImage,
+  schema_type = "BlogPosting",
+  last_modified_at,
+  content = "",
+  currentSlug = "",
+  relatedService,
+} = Astro.props;
+
+// Look up related service data for CTA
+let relatedServiceData: { title: string; slug: string } | null = null;
+if (relatedService) {
+  const allServices = await getCollection('services');
+  const matched = allServices.find(s => s.slug === relatedService);
+  if (matched) {
+    relatedServiceData = { title: matched.data.title, slug: matched.slug };
+  }
+}
+
+// Calculate reading time from content
+const { readingTime } = calculateReadingTime(content);
+
+// Format dates
+const publishDate = formatDate(date);
+const isoDate = formatDateISO(date);
+
+const modifiedIsoDate = last_modified_at
+  ? formatDateISO(last_modified_at)
+  : null;
+
+// Show "Updated" date when last_modified_at exists and differs from publish date
+const showModifiedDate = last_modified_at && formatDateISO(last_modified_at) !== formatDateISO(date);
+const modifiedDisplayDate = last_modified_at ? formatDate(last_modified_at) : null;
+
+// Meta description: use excerpt, description, or fallback
+const metaDescription = excerpt || description || `Read ${title} on ${SITE.title}`;
+
+// Current URL for canonical and sharing
+const currentUrl = Astro.url.href;
+const siteUrl = SITE.url;
+const absoluteUrl = currentUrl.startsWith("http") ? currentUrl : new URL(Astro.url.pathname, SITE.url).href;
+
+// Generate dynamic OG image path from current slug (only if slug exists)
+// URL pattern: /og/blog/[slug].png
+const dynamicOgImage = currentSlug ? `/og/blog/${currentSlug}.png` : undefined;
+
+// OG Image priority: customOgImage > image.src > dynamicOgImage (generated)
+const ogImage = customOgImage || image?.src || dynamicOgImage;
+
+// BreadcrumbList Schema for SEO
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": siteUrl
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Blog",
+      "item": `${siteUrl}/blog/`
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": title,
+      "item": absoluteUrl
+    }
+  ]
+};
+---
+
+<Layout
+  title={title}
+  description={metaDescription}
+  type="article"
+  publishedTime={isoDate}
+  modifiedTime={modifiedIsoDate || undefined}
+  image={ogImage}
+  canonicalUrl={new URL(Astro.url.pathname, Astro.site || SITE.url).href}
+>
+  <!-- Schema.org Article Structured Data
+       The @type field is driven by schema_type (default: "BlogPosting").
+       Setting schema_type to "HowTo" in frontmatter changes the JSON-LD @type accordingly.
+       TODO: When HowTo posts are published, add step/tool/supply fields to the blog
+       schema in content.config.ts and include them in the JSON-LD output below. -->
+  <Fragment slot="head">
+    <script is:inline type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />
+    <script is:inline type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": schema_type,
+      "headline": title,
+      "datePublished": isoDate,
+      "dateModified": modifiedIsoDate || isoDate,
+      "author": {
+        "@type": "Person",
+        "name": author,
+        "url": `${siteUrl}/about/`,
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": SITE.title,
+        "url": siteUrl,
+        "logo": {
+          "@type": "ImageObject",
+          "url": `${siteUrl}/assets/images/logo.svg`
+        }
+      },
+      "description": metaDescription,
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": absoluteUrl
+      },
+      ...(image?.src && {
+        "image": {
+          "@type": "ImageObject",
+          "url": image.src.startsWith("http") ? image.src : `${siteUrl}${image.src}`
+        }
+      }),
+      ...(categories.length > 0 && {
+        "articleSection": categories[0]
+      }),
+      ...(tags.length > 0 && {
+        "keywords": tags.join(", ")
+      })
+    })} />
+  </Fragment>
+
+  <PageBackground>
+  <!-- Blog Post Article -->
+  <article class="h-entry py-8 pb-16" itemscope itemtype={`https://schema.org/${schema_type}`}>
+
+    <!-- POST HEADER -->
+    <header class="mb-10 text-center">
+      <div class="w-full max-w-4xl mx-auto px-4 md:px-6">
+
+        <!-- Breadcrumbs -->
+        <Breadcrumbs items={[
+          { label: "Blog", href: "/blog/" },
+          { label: title },
+        ]} />
+
+        <!-- Categories (above title) -->
+        {categories.length > 0 && (
+          <div class="flex flex-wrap justify-center gap-2 mb-4">
+            {categories.map((category) => (
+              <Badge variant="category" size="default" shape="square">
+                {category}
+              </Badge>
+            ))}
+          </div>
+        )}
+
+        <!-- Title -->
+        <h1
+          class="font-mono text-4xl md:text-5xl font-extrabold leading-tight text-fg-bold tracking-tight mb-6 text-balance p-name"
+          itemprop="headline"
+        >
+          {title}
+        </h1>
+
+        <!-- Meta Row: Date, Reading Time, Author -->
+        <div class="flex flex-wrap items-center justify-center gap-x-3 gap-y-2 text-fg-light font-mono text-sm">
+          <!-- Publish Date -->
+          <time
+            class="inline-flex items-center whitespace-nowrap dt-published"
+            datetime={isoDate}
+            itemprop="datePublished"
+          >
+            <svg class="w-4 h-4 mr-1 opacity-70" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+              <line x1="16" y1="2" x2="16" y2="6"></line>
+              <line x1="8" y1="2" x2="8" y2="6"></line>
+              <line x1="3" y1="10" x2="21" y2="10"></line>
+            </svg>
+            {publishDate}
+          </time>
+
+          {/* Updated date (shown when last_modified_at differs from date) */}
+          {showModifiedDate && (
+            <>
+              <span class="text-fg-muted font-normal" aria-hidden="true">•</span>
+              <time
+                class="inline-flex items-center whitespace-nowrap"
+                datetime={modifiedIsoDate!}
+                itemprop="dateModified"
+              >
+                <svg class="w-4 h-4 mr-1 opacity-70" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                  <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                  <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                </svg>
+                Updated: {modifiedDisplayDate}
+              </time>
+            </>
+          )}
+
+          <span class="text-fg-muted font-normal" aria-hidden="true">•</span>
+
+          <!-- Reading Time -->
+          <span class="inline-flex items-center whitespace-nowrap">
+            <svg class="w-4 h-4 mr-1 opacity-70" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <circle cx="12" cy="12" r="10"></circle>
+              <polyline points="12 6 12 12 16 14"></polyline>
+            </svg>
+            {readingTime} min read
+          </span>
+
+          <!-- Author -->
+          <span class="text-fg-muted font-normal" aria-hidden="true">•</span>
+          <a
+            href="/about/"
+            class="inline-flex items-center whitespace-nowrap text-accent-secondary hover:text-accent-primary transition-colors p-author h-card"
+            itemprop="author"
+            itemscope
+            itemtype="https://schema.org/Person"
+          >
+            <svg class="w-4 h-4 mr-1 opacity-70" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+              <circle cx="12" cy="7" r="4"></circle>
+            </svg>
+            <span class="p-name" itemprop="name">{author}</span>
+          </a>
+        </div>
+
+        <!-- Hidden permalink for microformats -->
+        <a class="u-url u-uid" href={absoluteUrl} hidden itemprop="mainEntityOfPage"></a>
+
+      </div>
+    </header>
+
+    <!-- Featured Image (if provided) -->
+    {image?.src && (
+      <div class="mb-10">
+        <div class="w-full max-w-4xl mx-auto px-4 md:px-6">
+          <figure class="rounded-lg overflow-hidden">
+            <Image
+              src={image.src}
+              alt={image.alt || title}
+              width={1200}
+              height={630}
+              format="webp"
+              class="w-full h-auto object-cover u-photo"
+              loading="eager"
+              fetchpriority="high"
+            />
+          </figure>
+        </div>
+      </div>
+    )}
+
+    <!-- POST CONTENT -->
+    <div class="mb-12">
+      <div class="w-full max-w-3xl mx-auto px-4 md:px-6">
+
+        <!-- Main content area with prose styling (Tailwind Typography) -->
+        <div class="prose prose-lg max-w-none e-content" itemprop="articleBody">
+          <slot />
+        </div>
+
+        <!-- Related Service CTA -->
+        {relatedServiceData && (
+          <div class="mt-10 p-6 bg-emerald-50/50 dark:bg-emerald-950/50 border border-emerald-200/50 dark:border-emerald-800/50 rounded-xl">
+            <p class="text-gray-700 dark:text-gray-300 leading-relaxed mb-3">
+              Need help with this? Our <a href={`/services/${relatedServiceData.slug}/`} class="text-emerald-700 dark:text-emerald-400 font-medium underline underline-offset-2 hover:text-emerald-800 dark:hover:text-emerald-300">{relatedServiceData.title}</a> service handles exactly this kind of work.
+            </p>
+            <a
+              href="/contact/"
+              class="inline-flex items-center text-sm font-medium text-emerald-700 dark:text-emerald-400 hover:text-emerald-800 dark:hover:text-emerald-300 transition-colors"
+            >
+              Get my free assessment
+              <svg class="w-4 h-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+              </svg>
+            </a>
+          </div>
+        )}
+
+        <!-- TAGS -->
+        {tags.length > 0 && (
+          <footer class="flex flex-wrap items-baseline gap-2 mt-10 pt-6 border-t border-border">
+            <span class="font-mono text-sm font-semibold text-fg-light">Tags:</span>
+            <ul class="flex flex-wrap gap-2 list-none m-0 p-0">
+              {tags.map((tag) => (
+                <li class="min-h-[44px] inline-flex items-center font-mono text-sm text-accent-secondary transition-colors duration-150 ease-out hover:text-accent-primary">
+                  <span class="p-category">#{tag.replace(/\s+/g, "-").toLowerCase()}</span>
+                </li>
+              ))}
+            </ul>
+          </footer>
+        )}
+
+      </div>
+    </div>
+
+    <!-- AUTHOR BIO SECTION (Placeholder) -->
+    <section class="py-10 bg-bg-alt border-y border-border" aria-labelledby="author-bio-heading">
+      <div class="w-full max-w-3xl mx-auto px-4 md:px-6">
+        <h2 id="author-bio-heading" class="sr-only">About the Author</h2>
+        <!-- Author bio component will be added here (AST-19) -->
+        <slot name="author-bio">
+          <div class="flex items-start gap-4 p-6 bg-surface-glass rounded-lg border border-border">
+            <div class="shrink-0 w-16 h-16 rounded-full bg-linear-to-br from-accent-primary to-accent-secondary flex items-center justify-center">
+              <span class="text-2xl font-bold text-bg">{author.charAt(0).toUpperCase()}</span>
+            </div>
+            <div class="flex-1">
+              <p class="font-mono font-semibold text-fg-bold mb-1">{author}</p>
+              <p class="text-sm text-fg-light leading-relaxed">
+                {SITE.description}
+              </p>
+            </div>
+          </div>
+        </slot>
+      </div>
+    </section>
+
+    <!-- SOCIAL SHARING SECTION (Placeholder) -->
+    <section class="py-8 text-center" aria-labelledby="share-heading">
+      <div class="w-full max-w-3xl mx-auto px-4 md:px-6">
+        <h2 id="share-heading" class="font-mono text-sm font-semibold uppercase tracking-wide text-fg-light mb-4">
+          Share this article
+        </h2>
+        <!-- Social share component will be added here (AST-24) -->
+        <slot name="social-share">
+          <div class="flex flex-wrap justify-center gap-3" data-share-url={absoluteUrl} data-share-title={title}>
+            <!-- Twitter/X Share -->
+            <a
+              href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(absoluteUrl)}&text=${encodeURIComponent(title)}`}
+              class="share-button"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Share on Twitter"
+            >
+              <svg class="shrink-0" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+              </svg>
+              <span>Twitter</span>
+            </a>
+            <!-- LinkedIn Share -->
+            <a
+              href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(absoluteUrl)}`}
+              class="share-button"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Share on LinkedIn"
+            >
+              <svg class="shrink-0" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+              </svg>
+              <span>LinkedIn</span>
+            </a>
+            <!-- Copy Link Button -->
+            <button
+              type="button"
+              class="share-button"
+              data-copy-url={absoluteUrl}
+              aria-label="Copy link to clipboard"
+            >
+              <svg class="shrink-0" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+                <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+              </svg>
+              <span>Copy Link</span>
+            </button>
+          </div>
+        </slot>
+      </div>
+    </section>
+
+  </article>
+
+  <!-- RELATED POSTS SECTION -->
+  <aside class="py-12 bg-bg" aria-labelledby="related-posts-heading">
+    <div class="w-full max-w-4xl mx-auto px-4 md:px-6">
+      <h2 id="related-posts-heading" class="font-mono text-2xl font-bold text-fg-bold text-center mb-8">
+        Related Articles
+      </h2>
+      <RelatedPosts
+        currentSlug={currentSlug}
+        categories={categories}
+        tags={tags}
+        maxPosts={3}
+      />
+    </div>
+  </aside>
+
+  <!-- End-of-post CTA -->
+  <CTASection
+    headline="Need help putting this into practice?"
+    description="Tell us what you're working on and we'll see how we can help."
+    primaryText="Get My Free Assessment"
+    primaryUrl="/contact/"
+  />
+  </PageBackground>
+
+</Layout>
+
+<style is:global>
+  /*
+   * Share Button Styles
+   */
+  .share-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: var(--color-surface-glass);
+    border: 1px solid var(--color-border);
+    border-radius: 9999px;
+    color: var(--color-fg);
+    font-family: var(--font-mono, ui-monospace, monospace);
+    font-size: 0.875rem;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.15s ease-out;
+  }
+
+  .share-button:hover,
+  .share-button:focus {
+    background: var(--color-bg-surface);
+    border-color: var(--color-accent-primary);
+    color: var(--color-fg-bold);
+  }
+
+  .share-button:focus-visible {
+    outline: 2px solid var(--color-accent-primary);
+    outline-offset: 2px;
+  }
+</style>

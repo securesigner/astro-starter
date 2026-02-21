@@ -1,0 +1,44 @@
+---
+/**
+ * PageBackground.astro
+ *
+ * A wrapper component that provides a flowing warm-to-cool gradient background.
+ * Creates a subtle, inviting atmosphere that moves from warm amber tones at the
+ * top to cool sage/emerald tones toward the bottom.
+ *
+ * Usage:
+ * ```astro
+ * <PageBackground>
+ *   <YourPageContent />
+ * </PageBackground>
+ * ```
+ *
+ * @slot default - The page content to wrap with the gradient background
+ */
+
+interface Props {
+  /**
+   * Additional CSS classes to apply to the wrapper
+   */
+  class?: string;
+}
+
+const { class: className = '' } = Astro.props;
+---
+
+<div
+  class:list={[
+    'min-h-screen',
+    'bg-linear-to-b',
+    'from-amber-50/50',
+    'dark:from-amber-950/20',
+    'via-white',
+    'dark:via-gray-950',
+    'via-30%',
+    'to-emerald-50/30',
+    'dark:to-emerald-950/20',
+    className,
+  ]}
+>
+  <slot />
+</div>

@@ -1,0 +1,1024 @@
+/* =============================================================================
+   GLOBAL STYLES
+   =============================================================================
+   Entry point for all styles. Includes:
+   1. Tailwind CSS v4 import
+   2. CSS Custom Properties (design tokens ported from Jekyll _sass/tokens/)
+   3. Dark theme configuration
+   4. Base styles and resets
+   ============================================================================= */
+
+@import "tailwindcss";
+@import "tw-animate-css";
+
+/* shadcn/ui animation plugin */
+@plugin "tailwindcss-animate";
+
+/* Dark mode variant for shadcn/ui components */
+@custom-variant dark (&:is(.dark *));
+
+/* =============================================================================
+   TAILWIND CSS v4 THEME CONFIGURATION
+   =============================================================================
+   Tailwind v4 uses CSS-based configuration. This defines the content sources
+   for the JIT compiler to scan for class usage.
+   ============================================================================= */
+
+@source "../components/**/*.{astro,tsx,jsx}";
+@source "../layouts/**/*.astro";
+@source "../pages/**/*.{astro,tsx,jsx,mdx,md}";
+@source "../content/**/*.{md,mdx}";
+
+/* =============================================================================
+   TAILWIND v4 THEME — Design Token Mapping
+   =============================================================================
+   Maps CSS custom properties to Tailwind utilities via @theme directive.
+   This enables usage like: text-accent-primary, bg-surface, shadow-glow-md
+   ============================================================================= */
+
+@theme {
+  /* Colors - Background (Light Theme) */
+  --color-bg: #ffffff;
+  --color-bg-alt: #f9fafb;
+  --color-bg-surface: #f3f4f6;
+  --color-bg-deepest: #ffffff;
+
+  /* Colors - Warm Background Tones
+   * Cream and warm white tones for softer, more inviting backgrounds.
+   * Use for hero sections, feature areas, and alternating content blocks.
+   */
+  --color-warm-cream: #faf8f5;        /* Primary warm background - soft cream */
+  --color-warm-cream-deep: #f5f0e8;   /* Deeper cream for layered sections */
+  --color-warm-amber: #fffbeb;        /* amber-50 - warm highlight areas */
+  --color-warm-amber-deep: #fef3c7;   /* amber-100 - stronger warm accent */
+  --color-cool-sage: #ecfdf5;         /* emerald-50 - cool sage complement */
+  --color-cool-sage-deep: #d1fae5;    /* emerald-100 - deeper sage accent */
+  --color-warm-stone: #fafaf9;        /* stone-50 - neutral warm */
+
+  /* Colors - Foreground/Text (Light Theme) */
+  --color-fg: #171717;
+  --color-fg-bold: #0a0a0a;
+  --color-fg-light: #525252;
+  --color-fg-muted: #737373;
+
+  /* Colors - Accent (Primary: Emerald) */
+  --color-accent-primary: #047857;     /* emerald-700: 5.42:1 contrast on white - WCAG AA compliant */
+  --color-accent-primary-alt: #065f46;
+  --color-accent-primary-light: #065f46;  /* emerald-800 for WCAG AA on tinted backgrounds */
+
+  /* Colors - Accent (Secondary: Emerald variant) */
+  --color-accent-secondary: #047857;    /* Changed from #10b981 to emerald-700 for WCAG AA */
+  --color-accent-secondary-alt: #065f46;
+  --color-accent-secondary-light: #065f46;  /* emerald-800 for WCAG AA on tinted backgrounds */
+
+  /* Colors - Accent (Tertiary: Emerald dark) */
+  --color-accent-tertiary: #065f46;
+  --color-accent-tertiary-alt: #064e3b;
+  --color-accent-tertiary-light: #047857;
+
+  /* Colors - Accent (Cyan/Magenta for decorative gradients - WCAG AA compliant) */
+  --color-accent-cyan: #047857;     /* emerald-700: 5.42:1 contrast on white */
+  --color-accent-magenta: #047857;  /* emerald-700: 5.42:1 contrast on white */
+
+  /* Colors - Status */
+  --color-success: #34d058;
+  --color-warning: #f9c513;
+  --color-danger: #f85149;
+  --color-danger-text: #ff7b72;
+  --color-info: #58a6ff;
+  --color-orange: #ff9800;
+
+  /* Colors - Border & Overlay (Light Theme) */
+  --color-border: rgba(0, 0, 0, 0.1);
+  --color-border-accent: rgba(5, 150, 105, 0.4);
+  --color-overlay: rgba(0, 0, 0, 0.3);
+
+  /* Colors - Glass Morphism (Light Theme) */
+  --color-surface-glass: rgba(255, 255, 255, 0.8);
+  --color-glass-bg: rgba(255, 255, 255, 0.8);
+  --color-glass-border: rgba(0, 0, 0, 0.1);
+
+  /* Colors - Navigation (Light Theme) */
+  --color-nav-link: #374151;
+  --color-nav-link-hover: #059669;
+
+  /* Colors - Link (WCAG AA compliant - minimum 4.5:1 contrast on white) */
+  --color-link: #047857;           /* emerald-700: 5.42:1 contrast ratio */
+  --color-link-hover: #064e3b;     /* emerald-900: 12.62:1 contrast ratio */
+
+  /* Colors - Neutral */
+  --color-neutral: #6c757d;
+  --color-neutral-alt: #607d8b;
+
+  /* Colors - Social */
+  --color-twitter: #1da1f2;
+  --color-linkedin: #0a66c2;
+  --color-github: #333333;
+
+  /* Font Families */
+  /* DM Sans for body text, Fraunces for headings/display */
+  --font-family-sans: "DM Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-family-serif: "Fraunces", Georgia, "Times New Roman", serif;
+  --font-family-mono: "JetBrains Mono", "Fira Code", "Consolas", "Monaco", "Courier New", monospace;
+  --font-heading: "Fraunces", Georgia, "Times New Roman", serif;
+
+  /* Font Sizes */
+  --font-size-xs: 0.75rem;
+  --font-size-sm: 0.875rem;
+  --font-size-base: 1rem;
+  --font-size-lg: 1.125rem;
+  --font-size-xl: 1.25rem;
+  --font-size-2xl: 1.5rem;
+  --font-size-3xl: 1.875rem;
+  --font-size-4xl: 2.25rem;
+  --font-size-5xl: 3rem;
+  --font-size-6xl: 3.75rem;
+
+  /* Spacing (4px scale) */
+  --spacing-1: 0.25rem;
+  --spacing-2: 0.5rem;
+  --spacing-3: 0.75rem;
+  --spacing-4: 1rem;
+  --spacing-5: 1.25rem;
+  --spacing-6: 1.5rem;
+  --spacing-8: 2rem;
+  --spacing-10: 2.5rem;
+  --spacing-12: 3rem;
+  --spacing-16: 4rem;
+  --spacing-20: 5rem;
+  --spacing-24: 6rem;
+
+  /* Border Radius */
+  --radius-xs: 0.25em;
+  --radius-sm: 0.375em;
+  --radius-md: 0.5em;
+  --radius-lg: 0.75em;
+  --radius-xl: 1.25em;
+  --radius-pill: 3em;
+  --radius-full: 9999px;
+
+  /* Icon Sizes
+   * Standardized scale for consistent icon sizing across components.
+   * See docs/icon-sizes.md for usage guidelines.
+   */
+  --icon-xs: 0.75rem;   /* 12px - Inline indicators */
+  --icon-sm: 1rem;      /* 16px - Button icons, inline small text */
+  --icon-md: 1.25rem;   /* 20px - Default, nav links, lists */
+  --icon-lg: 1.5rem;    /* 24px - Feature cards, sections */
+  --icon-xl: 2rem;      /* 32px - Hero, large features */
+
+  /* Shadows */
+  --shadow-sm: 0 0.125em 0.375em rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 0.5em 1.5em rgba(0, 0, 0, 0.12);
+  --shadow-lg: 0 1em 2.5em rgba(0, 0, 0, 0.15);
+  --shadow-xl: 0 1.5em 3em rgba(0, 0, 0, 0.2);
+  --shadow-2xl: 0 2em 4em rgba(0, 0, 0, 0.25);
+  --shadow-glow-sm: 0 0 0.5em rgba(5, 150, 105, 0.15);
+  --shadow-glow-md: 0 0 1em rgba(5, 150, 105, 0.2);
+  --shadow-glow-lg: 0 0 2em rgba(5, 150, 105, 0.3);
+  --shadow-glow-emerald: 0 0 1em rgba(16, 185, 129, 0.25);
+  --shadow-glow-emerald-light: 0 0 1em rgba(52, 211, 153, 0.2);
+  --shadow-glow-accent: 0 0 1em rgba(5, 150, 105, 0.2);
+
+  /* Extended Emerald Glow Scale (for emerald-themed components) */
+  --shadow-glow-emerald-xs: 0 0 10px rgba(5, 150, 105, 0.08);
+  --shadow-glow-emerald-sm: 0 0 20px rgba(5, 150, 105, 0.12);
+  --shadow-glow-emerald-md: 0 0 30px rgba(5, 150, 105, 0.15);
+  --shadow-glow-emerald-lg: 0 0 40px rgba(5, 150, 105, 0.2);
+  --shadow-glow-emerald-xl: 0 0 60px rgba(5, 150, 105, 0.25);
+
+  /* Card/Elevation Shadows (Light Theme) */
+  --shadow-card: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --shadow-card-hover: 0 6px 20px rgba(0, 0, 0, 0.12);
+
+  /* Button Glow Shadows (Emerald) */
+  --shadow-button-primary: 0 4px 15px rgba(5, 150, 105, 0.3), 0 0 20px rgba(5, 150, 105, 0.15);
+  --shadow-button-primary-hover: 0 6px 20px rgba(5, 150, 105, 0.4), 0 0 30px rgba(5, 150, 105, 0.2);
+  --shadow-button-green: 0 4px 15px rgba(34, 197, 94, 0.3), 0 0 20px rgba(34, 197, 94, 0.15);
+  --shadow-button-green-hover: 0 6px 20px rgba(34, 197, 94, 0.4), 0 0 30px rgba(34, 197, 94, 0.2);
+
+  /* Ambient Shadows (Light Theme) */
+  --shadow-ambient: 0 0 20px rgba(0, 0, 0, 0.04), 0 0 40px rgba(0, 0, 0, 0.02);
+  --shadow-ambient-hover: 0 0 30px rgba(0, 0, 0, 0.06), 0 0 50px rgba(0, 0, 0, 0.03);
+  --shadow-ambient-inset: inset 0 0 20px rgba(0, 0, 0, 0.02);
+
+  /* Badge Pulse Animation Shadows */
+  --shadow-pulse-amber: 0 0 10px rgba(251, 191, 36, 0.3);
+  --shadow-pulse-amber-peak: 0 0 20px rgba(251, 191, 36, 0.5);
+
+  /* Transitions */
+  --transition-fast: 150ms;
+  --transition-base: 300ms;
+  --transition-slow: 500ms;
+
+  /* Easing */
+  --ease-linear: linear;
+  --ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --ease-out: cubic-bezier(0, 0, 0.2, 1);
+  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+
+  /* Z-Index */
+  --z-index-dropdown: 100;
+  --z-index-sticky: 200;
+  --z-index-fixed: 300;
+  --z-index-modal-backdrop: 400;
+  --z-index-modal: 500;
+  --z-index-popover: 600;
+  --z-index-tooltip: 700;
+
+  /* Colors - Accent Background (subtle tinted backgrounds) */
+  --color-accent-bg-subtle: rgba(5, 150, 105, 0.1);
+
+  /* Colors - Section Connector */
+  --color-connector-warm-from: rgba(251, 191, 36, 0.15);
+  --color-connector-warm-via: rgba(245, 158, 11, 0.08);
+  --color-connector-warm-to: rgba(217, 119, 6, 0.03);
+  --color-connector-warm-stroke: rgba(251, 191, 36, 0.2);
+  --color-connector-warm-dot: rgba(251, 191, 36, 0.25);
+  --color-connector-cool-from: rgba(16, 185, 129, 0.12);
+  --color-connector-cool-via: rgba(5, 150, 105, 0.06);
+  --color-connector-cool-to: rgba(4, 120, 87, 0.02);
+  --color-connector-cool-stroke: rgba(16, 185, 129, 0.18);
+  --color-connector-cool-dot: rgba(16, 185, 129, 0.2);
+  --color-connector-neutral-from: rgba(156, 163, 175, 0.1);
+  --color-connector-neutral-via: rgba(107, 114, 128, 0.05);
+  --color-connector-neutral-to: rgba(75, 85, 99, 0.02);
+  --color-connector-neutral-stroke: rgba(156, 163, 175, 0.12);
+  --color-connector-neutral-dot: rgba(156, 163, 175, 0.15);
+
+  /* shadcn/ui semantic color tokens (mapped to design system) */
+  --radius: 0.75em;
+}
+
+/* =============================================================================
+   SHADCN/UI CSS VARIABLES
+   =============================================================================
+   These CSS custom properties are required by shadcn/ui components.
+   Values are mapped to our design system tokens.
+   ============================================================================= */
+
+@layer base {
+  :root {
+    /* shadcn/ui color variables — Light Theme with Emerald accents */
+    --background: 0 0% 100%; /* white */
+    --foreground: 0 0% 9%; /* gray-900 */
+
+    --card: 0 0% 100%; /* white card bg */
+    --card-foreground: 0 0% 9%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 9%;
+
+    --primary: 160 84% 39%; /* emerald-600 */
+    --primary-foreground: 0 0% 100%; /* white */
+
+    --secondary: 0 0% 96%; /* gray-100 */
+    --secondary-foreground: 0 0% 9%;
+
+    --muted: 0 0% 98%; /* gray-50 */
+    --muted-foreground: 0 0% 40%; /* gray-600 */
+
+    --accent: 160 84% 39%; /* emerald-600 */
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 84% 60%; /* --color-danger */
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 0 0% 88%; /* gray-200 */
+    --input: 0 0% 88%;
+    --ring: 160 84% 39%; /* emerald-600 */
+
+    /* Chart colors (emerald palette) */
+    --chart-1: 160 84% 39%;
+    --chart-2: 158 64% 52%;
+    --chart-3: 161 94% 30%;
+    --chart-4: 163 72% 41%;
+    --chart-5: 142 71% 45%;
+  }
+
+  .dark {
+    /* Dark theme (optional fallback - not primary) */
+    --background: 0 0% 4%;
+    --foreground: 0 0% 95%;
+
+    --card: 0 0% 8%;
+    --card-foreground: 0 0% 95%;
+
+    --popover: 0 0% 8%;
+    --popover-foreground: 0 0% 95%;
+
+    --primary: 160 84% 39%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 0 0% 15%;
+    --secondary-foreground: 0 0% 95%;
+
+    --muted: 0 0% 15%;
+    --muted-foreground: 0 0% 65%;
+
+    --accent: 160 84% 39%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 0 0% 20%;
+    --input: 0 0% 20%;
+    --ring: 160 84% 39%;
+
+    --chart-1: 160 84% 39%;
+    --chart-2: 158 64% 52%;
+    --chart-3: 161 94% 30%;
+    --chart-4: 163 72% 41%;
+    --chart-5: 142 71% 45%;
+  }
+}
+
+/* =============================================================================
+   DARK THEME — DESIGN TOKEN OVERRIDES
+   =============================================================================
+   Overrides the @theme CSS custom properties when .dark class is on <html>.
+   Components using tokens like bg-glass-bg, text-fg-bold, etc. will
+   automatically pick up these dark values.
+   ============================================================================= */
+
+.dark {
+  /* Background */
+  --color-bg: #0a0a0a;
+  --color-bg-alt: #111111;
+  --color-bg-surface: #1a1a1a;
+  --color-bg-deepest: #050505;
+
+  /* Warm Background Tones (muted for dark mode) */
+  --color-warm-cream: #141210;
+  --color-warm-cream-deep: #1a1610;
+  --color-warm-amber: #1a1708;
+  --color-warm-amber-deep: #1f1a0a;
+  --color-cool-sage: #0a1a14;
+  --color-cool-sage-deep: #0f2419;
+  --color-warm-stone: #121212;
+
+  /* Foreground/Text */
+  --color-fg: #e5e5e5;
+  --color-fg-bold: #f5f5f5;
+  --color-fg-light: #a3a3a3;
+  --color-fg-muted: #737373;
+
+  /* Accent (slightly brighter for dark backgrounds) */
+  --color-accent-primary: #10b981;
+  --color-accent-primary-alt: #059669;
+  --color-accent-primary-light: #34d399;
+  --color-accent-secondary: #10b981;
+  --color-accent-secondary-alt: #059669;
+  --color-accent-secondary-light: #34d399;
+  --color-accent-tertiary: #059669;
+  --color-accent-tertiary-alt: #047857;
+  --color-accent-tertiary-light: #10b981;
+  --color-accent-cyan: #10b981;
+  --color-accent-magenta: #10b981;
+
+  /* Border & Overlay */
+  --color-border: rgba(255, 255, 255, 0.1);
+  --color-border-accent: rgba(16, 185, 129, 0.4);
+  --color-overlay: rgba(0, 0, 0, 0.6);
+
+  /* Glass Morphism */
+  --color-surface-glass: rgba(20, 20, 20, 0.8);
+  --color-glass-bg: rgba(20, 20, 20, 0.8);
+  --color-glass-border: rgba(255, 255, 255, 0.1);
+
+  /* Navigation */
+  --color-nav-link: #d1d5db;
+  --color-nav-link-hover: #34d399;
+
+  /* Link */
+  --color-link: #34d399;
+  --color-link-hover: #6ee7b7;
+
+  /* Neutral */
+  --color-neutral: #9ca3af;
+  --color-neutral-alt: #78909c;
+
+  /* Social (unchanged — brand colors) */
+
+  /* Shadows (darker, with emerald glow adjustments) */
+  --shadow-sm: 0 0.125em 0.375em rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 0.5em 1.5em rgba(0, 0, 0, 0.35);
+  --shadow-lg: 0 1em 2.5em rgba(0, 0, 0, 0.4);
+  --shadow-xl: 0 1.5em 3em rgba(0, 0, 0, 0.5);
+  --shadow-2xl: 0 2em 4em rgba(0, 0, 0, 0.6);
+  --shadow-card: 0 4px 12px rgba(0, 0, 0, 0.3);
+  --shadow-card-hover: 0 6px 20px rgba(0, 0, 0, 0.4);
+  --shadow-ambient: 0 0 20px rgba(0, 0, 0, 0.15), 0 0 40px rgba(0, 0, 0, 0.08);
+  --shadow-ambient-hover: 0 0 30px rgba(0, 0, 0, 0.2), 0 0 50px rgba(0, 0, 0, 0.1);
+  --shadow-ambient-inset: inset 0 0 20px rgba(0, 0, 0, 0.1);
+
+  /* Accent Background */
+  --color-accent-bg-subtle: rgba(16, 185, 129, 0.15);
+
+  /* Section Connector — reduced opacity for dark backgrounds */
+  --color-connector-warm-from: rgba(251, 191, 36, 0.08);
+  --color-connector-warm-via: rgba(245, 158, 11, 0.04);
+  --color-connector-warm-to: rgba(217, 119, 6, 0.02);
+  --color-connector-warm-stroke: rgba(251, 191, 36, 0.12);
+  --color-connector-warm-dot: rgba(251, 191, 36, 0.15);
+  --color-connector-cool-from: rgba(16, 185, 129, 0.08);
+  --color-connector-cool-via: rgba(5, 150, 105, 0.04);
+  --color-connector-cool-to: rgba(4, 120, 87, 0.02);
+  --color-connector-cool-stroke: rgba(16, 185, 129, 0.1);
+  --color-connector-cool-dot: rgba(16, 185, 129, 0.12);
+  --color-connector-neutral-from: rgba(156, 163, 175, 0.06);
+  --color-connector-neutral-via: rgba(107, 114, 128, 0.03);
+  --color-connector-neutral-to: rgba(75, 85, 99, 0.01);
+  --color-connector-neutral-stroke: rgba(156, 163, 175, 0.08);
+  --color-connector-neutral-dot: rgba(156, 163, 175, 0.1);
+}
+
+/* =============================================================================
+   CSS CUSTOM PROPERTIES — DESIGN TOKENS
+   =============================================================================
+   These :root variables reference the @theme values above, providing a
+   CSS-native API for JavaScript access and non-Tailwind usage.
+
+   The @theme block (above) is the SINGLE SOURCE OF TRUTH for all color values.
+   This :root block provides aliases for:
+   - Direct CSS usage: var(--color-accent-primary)
+   - JavaScript access: getComputedStyle(root).getPropertyValue('--color-accent-primary')
+
+   DO NOT duplicate color values here — reference @theme variables instead.
+   ============================================================================= */
+
+:root {
+  /* Unique :root values not covered by @theme (which is the single source of truth).
+     All color, font, spacing, radius, shadow, transition, and z-index tokens
+     are defined in @theme above and available as both Tailwind classes and CSS vars. */
+
+  /* Font Weights */
+  --font-weight-bold: 700;
+
+  /* Line Heights (used in base styles) */
+  --line-height-tight: 1.25;
+  --line-height-normal: 1.5;
+
+  /* ---------------------------------------------------------------------------
+     SPACING TOKENS (aliased from @theme)
+     --------------------------------------------------------------------------- */
+  /* @theme defines --spacing-*, alias as --space-* for legacy compatibility */
+  --space-1: var(--spacing-1);
+  --space-2: var(--spacing-2);
+  --space-3: var(--spacing-3);
+  --space-4: var(--spacing-4);
+  --space-5: var(--spacing-5);
+  --space-6: var(--spacing-6);
+  --space-8: var(--spacing-8);
+
+  /* ---------------------------------------------------------------------------
+     BORDER RADIUS TOKENS (aliased from @theme)
+     --------------------------------------------------------------------------- */
+  /* --radius-* defined in @theme block, no duplication needed */
+
+  /* ---------------------------------------------------------------------------
+     BORDER & MAGIC EFFECTS
+     --------------------------------------------------------------------------- */
+  /* Magic border (emerald accent effect) */
+  --border-magic: 1px solid var(--color-border-accent);
+
+  /* ---------------------------------------------------------------------------
+     SHADOW TOKENS (aliased from @theme where applicable)
+     --------------------------------------------------------------------------- */
+  /* Standard elevation and glow shadows - defined in @theme, no duplication needed */
+
+  /* Focus shadows (accessibility specific) */
+  --shadow-focus-accent: 0 0 0 0.125em rgba(0, 212, 255, 0.4);
+
+  /* ---------------------------------------------------------------------------
+     EFFECT TOKENS — Backdrop Blur
+     --------------------------------------------------------------------------- */
+  --backdrop-blur: blur(8px);
+
+  /* ---------------------------------------------------------------------------
+     TRANSITION / ANIMATION TOKENS (aliased from @theme where applicable)
+     --------------------------------------------------------------------------- */
+  /* Named transitions and easing functions - defined in @theme, no duplication needed */
+
+  /* Pre-composed transitions (unique to :root - computed values) */
+  --transition-color: color var(--transition-fast) var(--ease-out);
+}
+
+/* =============================================================================
+   REDUCED MOTION PREFERENCE
+   =============================================================================
+   Respects user's motion preferences for accessibility.
+   ============================================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --transition-fast: 0ms;
+    --transition-base: 0ms;
+    --transition-slow: 0ms;
+  }
+}
+
+/* =============================================================================
+   BASE STYLES
+   =============================================================================
+   Core element styles for the light theme with emerald accents.
+   ============================================================================= */
+
+html {
+  font-family: var(--font-family-sans);
+  background-color: var(--color-bg);
+  color: var(--color-fg);
+  font-size: 16px;
+  line-height: var(--line-height-normal);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  /* Smooth scrolling for skip links and anchor navigation */
+  scroll-behavior: smooth;
+  /* Prevent horizontal overflow on mobile */
+  overflow-x: hidden;
+}
+
+/* Respect reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+body {
+  min-height: 100vh;
+  background-color: var(--color-bg);
+  overflow-x: hidden;
+}
+
+/* Color scheme: light by default, dark when .dark class is applied */
+html {
+  color-scheme: light;
+}
+
+html.dark {
+  color-scheme: dark;
+}
+
+/* Links */
+a {
+  color: var(--color-accent-primary-light);
+  text-decoration: none;
+  transition: var(--transition-color);
+}
+
+/* Inline links within text blocks - must have underline for WCAG */
+a.underline,
+a[class*="underline"] {
+  text-decoration: underline !important;
+  text-underline-offset: 2px;
+}
+
+a:hover {
+  color: var(--color-accent-primary);
+}
+
+/* Focus styles for accessibility
+   Standardized focus ring for all interactive elements:
+   - 2px ring width (visible and meets WCAG)
+   - Cyan accent color for brand consistency
+   - 2px offset for visibility on dark backgrounds
+   ============================================================================= */
+:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--color-bg), 0 0 0 4px var(--color-accent-primary);
+}
+
+/* WCAG 2.2 — Focus Not Obscured (2.4.11)
+   Ensure focused elements are not hidden behind fixed navigation */
+:target,
+*:focus-visible {
+  scroll-margin-top: 5rem; /* Account for fixed nav height (~80px) */
+}
+
+/* Focus ring utility class for components that need explicit focus styling */
+.focus-ring {
+  @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-primary focus-visible:ring-offset-2 focus-visible:ring-offset-bg;
+}
+
+/* Selection */
+::selection {
+  background-color: var(--color-accent-primary);
+  color: var(--color-bg);
+}
+
+/* Headings */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-heading);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-tight);
+  color: var(--color-fg-bold);
+}
+
+/* =============================================================================
+   CODE & SYNTAX HIGHLIGHTING
+   =============================================================================
+   Styling for inline code and code blocks with Shiki syntax highlighting.
+   Styling for inline code and code blocks with Shiki syntax highlighting.
+   ============================================================================= */
+
+/* Shared code styling */
+code,
+pre {
+  font-family: var(--font-mono);
+}
+
+/* Inline code - glass styling */
+code:not(pre code) {
+  background-color: var(--color-surface-glass);
+  padding: 0.2em 0.4em;
+  border-radius: var(--radius-sm);
+  font-size: 0.875em;
+  color: var(--color-accent-tertiary);
+  border: 1px solid var(--color-border);
+}
+
+/* Code blocks - enhanced container with glass morphism */
+pre {
+  background-color: var(--color-bg-alt) !important;
+  padding: var(--space-4) var(--space-5);
+  border-radius: var(--radius-lg);
+  overflow-x: auto;
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-md);
+  margin: 1.5em 0;
+  /* Smooth horizontal scrolling */
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-border) transparent;
+}
+
+/* Webkit scrollbar styling for code blocks */
+pre::-webkit-scrollbar {
+  height: 8px;
+}
+
+pre::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+pre::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: var(--radius-full);
+}
+
+pre::-webkit-scrollbar-thumb:hover {
+  background: var(--color-fg-muted);
+}
+
+/* Reset inline code styles inside code blocks */
+pre code {
+  background: none !important;
+  padding: 0;
+  border: none;
+  color: inherit;
+  font-size: 0.9em;
+  line-height: 1.6;
+}
+
+/* Code block line styling for better readability */
+pre code .line {
+  display: inline-block;
+  width: 100%;
+  padding: 0 var(--space-1);
+}
+
+/* Highlighted lines (if used with line highlighting) */
+pre code .line.highlighted {
+  background-color: rgba(0, 212, 255, 0.1);
+  border-left: 3px solid var(--color-accent-primary);
+  margin-left: -0.5em;
+  padding-left: calc(0.5em - 3px);
+}
+
+/* Language badge for code blocks (optional enhancement) */
+pre[data-language]::before {
+  content: attr(data-language);
+  position: absolute;
+  top: 0;
+  right: var(--space-3);
+  padding: var(--space-1) var(--space-2);
+  font-size: var(--font-size-xs);
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  color: var(--color-fg-muted);
+  background: var(--color-bg-surface);
+  border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+  letter-spacing: 0.05em;
+}
+
+pre[data-language] {
+  position: relative;
+  padding-top: calc(var(--space-4) + 1.5em);
+}
+
+/* =============================================================================
+   UTILITY CLASSES
+   =============================================================================
+   Common utility patterns for the design system.
+   ============================================================================= */
+
+/* Glass morphism card */
+.glass-card {
+  background: var(--color-surface-glass);
+  backdrop-filter: var(--backdrop-blur);
+  -webkit-backdrop-filter: var(--backdrop-blur);
+  border: var(--border-magic);
+  border-radius: var(--radius-lg);
+}
+
+/* Glow effects */
+.glow-emerald {
+  box-shadow: var(--shadow-glow-emerald);
+}
+
+/* =============================================================================
+   HOVER EFFECTS WITH MEDIA QUERY
+   =============================================================================
+   These hover effects only apply on devices that support true hover capability.
+   This prevents "stuck" hover states on touch devices where hover is emulated.
+
+   - Transforms (translate, scale) are wrapped in @media (hover: hover)
+   - Focus-visible effects remain for keyboard accessibility
+   - Active states provide feedback for touch interactions
+   ============================================================================= */
+
+/* Hover effects - only apply on hover-capable devices */
+@media (hover: hover) {
+  .hover-glow:hover {
+    box-shadow: var(--shadow-glow-md);
+  }
+
+  .hover-lift:hover {
+    transform: translateY(-2px);
+  }
+
+  /* Card lift effect with glow */
+  .hover-lift-glow:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-glow-md);
+  }
+
+  /* Scale effect */
+  .hover-scale:hover {
+    transform: scale(1.05);
+  }
+
+  .hover-scale-sm:hover {
+    transform: scale(1.02);
+  }
+}
+
+/* Touch device active states for feedback */
+@media (hover: none) {
+  .hover-lift:active,
+  .hover-lift-glow:active {
+    transform: translateY(-1px);
+  }
+
+  .hover-scale:active,
+  .hover-scale-sm:active {
+    transform: scale(0.98);
+  }
+}
+
+/* =============================================================================
+   PROSE TYPOGRAPHY — Tailwind Typography Plugin Customizations
+   =============================================================================
+   Prose styles for Markdown content in blog posts, garden notes,
+   and other long-form content areas. Extends @tailwindcss/typography plugin.
+   ============================================================================= */
+
+/* Prose variable mapping is handled by the typography plugin in
+   tailwind.config.mjs — do not duplicate here. The CSS below provides
+   additional element-level prose styling beyond what the plugin covers. */
+
+/* Prose heading enhancements - monospace font family */
+.prose :where(h1, h2, h3, h4, h5, h6):not(:where([class~="not-prose"], [class~="not-prose"] *)) {
+  font-family: var(--font-mono);
+  letter-spacing: -0.02em;
+}
+
+/* Prose links - underlined for WCAG link-in-text-block compliance */
+.prose :where(a):not(:where([class~="not-prose"], [class~="not-prose"] *)) {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+/* Link hover/focus states */
+.prose :where(a):not(:where([class~="not-prose"], [class~="not-prose"] *)):hover,
+.prose :where(a):not(:where([class~="not-prose"], [class~="not-prose"] *)):focus {
+  color: var(--color-accent-primary);
+}
+
+/* Blockquote styling - glass morphism */
+.prose :where(blockquote):not(:where([class~="not-prose"], [class~="not-prose"] *)) {
+  background: var(--color-surface-glass);
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+  padding: 1em 1.5em;
+  font-style: italic;
+}
+
+/* Inline code styling */
+.prose :where(code):not(:where(pre *, [class~="not-prose"], [class~="not-prose"] *)) {
+  background: var(--color-surface-glass);
+  border-radius: var(--radius-sm);
+  padding: 0.2em 0.4em;
+  font-size: 0.875em;
+  color: var(--color-accent-tertiary);
+  border: 1px solid var(--color-border);
+}
+
+/* Remove backticks from inline code */
+.prose :where(code):not(:where(pre *, [class~="not-prose"], [class~="not-prose"] *))::before,
+.prose :where(code):not(:where(pre *, [class~="not-prose"], [class~="not-prose"] *))::after {
+  content: none;
+}
+
+/* Code block styling - enhanced with Shiki syntax highlighting */
+.prose :where(pre):not(:where([class~="not-prose"], [class~="not-prose"] *)) {
+  background: var(--color-bg-alt) !important;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-4) var(--space-5);
+  box-shadow: var(--shadow-md);
+  overflow-x: auto;
+  /* Smooth horizontal scrolling */
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-border) transparent;
+}
+
+/* Prose code block scrollbar styling */
+.prose :where(pre):not(:where([class~="not-prose"], [class~="not-prose"] *))::-webkit-scrollbar {
+  height: 8px;
+}
+
+.prose :where(pre):not(:where([class~="not-prose"], [class~="not-prose"] *))::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.prose :where(pre):not(:where([class~="not-prose"], [class~="not-prose"] *))::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: var(--radius-full);
+}
+
+/* Code inside prose blocks - reset for Shiki styling */
+.prose :where(pre code):not(:where([class~="not-prose"], [class~="not-prose"] *)) {
+  background: none !important;
+  padding: 0;
+  border: none;
+  color: inherit;
+  font-size: 0.9em;
+  line-height: 1.6;
+}
+
+/* Table styling - glass background for headers */
+.prose :where(th):not(:where([class~="not-prose"], [class~="not-prose"] *)) {
+  background: var(--color-surface-glass);
+}
+
+.prose :where(tr):not(:where([class~="not-prose"], [class~="not-prose"] *)):nth-child(even) {
+  background: var(--color-bg-alt);
+}
+
+/* Image styling with rounded corners */
+.prose :where(img):not(:where([class~="not-prose"], [class~="not-prose"] *)) {
+  border-radius: var(--radius-md);
+}
+
+/* Figure caption styling */
+.prose :where(figcaption):not(:where([class~="not-prose"], [class~="not-prose"] *)) {
+  text-align: center;
+}
+
+/* Enhanced paragraph spacing for better readability */
+.prose :where(p):not(:where([class~="not-prose"], [class~="not-prose"] *)) {
+  margin-top: 1.5em;
+  margin-bottom: 1.5em;
+}
+
+/* Increase spacing after headings for visual separation */
+.prose :where(h2):not(:where([class~="not-prose"], [class~="not-prose"] *)) {
+  margin-top: 2.5em;
+  margin-bottom: 1em;
+}
+
+.prose :where(h3, h4):not(:where([class~="not-prose"], [class~="not-prose"] *)) {
+  margin-top: 2em;
+  margin-bottom: 0.75em;
+}
+
+/* List spacing for breathing room */
+.prose :where(ul, ol):not(:where([class~="not-prose"], [class~="not-prose"] *)) {
+  margin-top: 1.5em;
+  margin-bottom: 1.5em;
+}
+
+.prose :where(li):not(:where([class~="not-prose"], [class~="not-prose"] *)) {
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+}
+
+/* Prose invert for light backgrounds (if ever needed) */
+.prose-invert {
+  --tw-prose-body: var(--color-bg);
+  --tw-prose-headings: var(--color-bg-deepest);
+  --tw-prose-links: var(--color-accent-primary-alt);
+}
+
+/* =============================================================================
+   HOVER MEDIA QUERY — Touch Device Compatibility
+   =============================================================================
+   Wraps hover-triggered transforms in @media (hover: hover) to prevent
+   "stuck" hover states on touch devices where hover is emulated via touch.
+
+   Problem: On touch devices, tapping an element triggers :hover state that
+   persists until another element is tapped. Transform effects like
+   translateY(-2px) or scale(1.1) can make the UI feel broken.
+
+   Solution: These transforms only apply on devices with true hover capability
+   (desktop with mouse/trackpad). Touch devices get immediate tap feedback
+   via :active states instead.
+   ============================================================================= */
+
+/* Hover transforms ONLY on hover-capable devices */
+@media (hover: hover) and (pointer: fine) {
+  /* Card/link lift effect on hover */
+  .group:hover .group-hover\:scale-110,
+  .group:hover .group-hover\:-translate-y-1,
+  .group:hover .group-hover\:translate-x-1 {
+    /* Allow group-hover transforms */
+  }
+}
+
+/* Touch device fallback: subtle active state for feedback */
+@media (hover: none) {
+  /* Disable transform on hover for touch */
+  .hover\:-translate-y-1:hover,
+  .hover\:translate-y-\[-2px\]:hover,
+  .hover\:scale-110:hover {
+    transform: none;
+  }
+
+  /* Add subtle active state for touch feedback */
+  .hover\:-translate-y-1:active,
+  .hover\:translate-y-\[-2px\]:active {
+    transform: translateY(-1px);
+    transition-duration: 100ms;
+  }
+
+  .hover\:scale-110:active {
+    transform: scale(1.02);
+    transition-duration: 100ms;
+  }
+
+  /* Group hover transforms - disable on touch */
+  .group:hover .group-hover\:scale-110,
+  .group:hover .group-hover\:translate-x-1 {
+    transform: none;
+  }
+
+  /* Group active for touch feedback */
+  .group:active .group-hover\:scale-110 {
+    transform: scale(1.02);
+    transition-duration: 100ms;
+  }
+
+  .group:active .group-hover\:translate-x-1 {
+    transform: translateX(2px);
+    transition-duration: 100ms;
+  }
+}
+
+/* =============================================================================
+   CUSTOM KEYFRAME ANIMATIONS
+   =============================================================================
+   Custom animations for visual storytelling elements.
+   ============================================================================= */
+
+/* Subtle wiggle animation for chaotic/messy visual elements */
+@keyframes wiggle {
+  0%, 100% {
+    transform: rotate(0deg) translateX(0);
+  }
+  25% {
+    transform: rotate(-1deg) translateX(-1px);
+  }
+  50% {
+    transform: rotate(0.5deg) translateX(1px);
+  }
+  75% {
+    transform: rotate(-0.5deg) translateX(-0.5px);
+  }
+}

@@ -1,0 +1,368 @@
+---
+/**
+ * Base Layout (Astro)
+ * ===================
+ * Primary layout used by all pages. Provides:
+ * - HTML5 document structure with light theme
+ * - SEO meta tags and Open Graph support
+ * - Accessibility features (skip-link, ARIA landmarks)
+ * - Global CSS import (Tailwind v4 + design tokens)
+ * - Slots for content and optional head elements
+ *
+ * Migrated from: _layouts/default.html + _includes/head.html
+ *
+ * Usage:
+ *   <Layout title="Page Title" description="Page description">
+ *     <main-content-here />
+ *   </Layout>
+ *
+ * Props:
+ *   - title: Page title (falls back to site title)
+ *   - description: Meta description (falls back to site description)
+ *   - image: OG image URL (falls back to default)
+ *   - type: OG type ("website" or "article")
+ *   - canonicalUrl: Override canonical URL
+ *   - publishedTime: ISO date for articles
+ *   - modifiedTime: ISO date for last modified
+ *   - noindex: Set true to prevent indexing
+ */
+
+import "../styles/global.css";
+// Self-hosted variable fonts (replaces Google Fonts for better performance & CSP compliance)
+import "@fontsource-variable/dm-sans";
+import "@fontsource-variable/fraunces";
+// Import critical font WOFF2 files as URLs for preload hints
+import dmSansWoff2 from "@fontsource-variable/dm-sans/files/dm-sans-latin-wght-normal.woff2?url";
+import frauncesWoff2 from "@fontsource-variable/fraunces/files/fraunces-latin-wght-normal.woff2?url";
+import { ClientRouter } from "astro:transitions";
+import { Toaster } from "@/components/ui/sonner";
+import MobileBottomNav from "@/components/MobileBottomNav";
+import Nav from "@/components/Nav.astro";
+import Footer from "@/components/Footer.astro";
+import { SITE } from "@/data/site";
+
+// Props with defaults
+interface Props {
+  title?: string;
+  description?: string;
+  image?: string;
+  type?: "website" | "article";
+  canonicalUrl?: string;
+  publishedTime?: string;
+  modifiedTime?: string;
+  noindex?: boolean;
+}
+
+const {
+  title,
+  description = SITE.description,
+  image = SITE.defaultImage,
+  type = "website",
+  canonicalUrl,
+  publishedTime,
+  modifiedTime,
+  noindex = false,
+} = Astro.props;
+
+// Current page path for navigation active states
+const currentPath = Astro.url.pathname;
+
+// Computed values
+const pageTitle = title ? `${title} — ${SITE.title}` : SITE.title;
+const canonical = canonicalUrl || Astro.url.href;
+const ogImage = image.startsWith("http") ? image : `${SITE.url}${image}`;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Core Meta Tags -->
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+
+    <!-- SEO Meta Tags -->
+    <title>{pageTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
+
+    <!-- Author and Generator -->
+    <meta name="author" content={SITE.author} />
+    <meta name="generator" content={Astro.generator} />
+
+    <!-- Theme Color -->
+    <meta name="theme-color" content="#ffffff" />
+
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:type" content={type} />
+    <meta property="og:title" content={title || SITE.title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:site_name" content={SITE.title} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={title || SITE.title} />
+    <meta property="og:locale" content="en_US" />
+
+    {publishedTime && <meta property="article:published_time" content={publishedTime} />}
+    {modifiedTime && <meta property="article:modified_time" content={modifiedTime} />}
+
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content={SITE.twitterCard} />
+    <meta name="twitter:title" content={title || SITE.title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+    <meta name="twitter:image:alt" content={title || SITE.title} />
+
+    <!-- Favicon References -->
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+
+    <!-- Font Preload: Critical above-the-fold fonts (DM Sans body + Fraunces headings) -->
+    <link rel="preload" href={dmSansWoff2} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={frauncesWoff2} as="font" type="font/woff2" crossorigin />
+
+    <!-- RSS Feed -->
+    <link
+      rel="alternate"
+      type="application/rss+xml"
+      title={`${SITE.title} Feed`}
+      href={`${SITE.url}/feed.xml`}
+    />
+
+    <!-- Organization Schema (JSON-LD) — Site-wide brand identity for search engines -->
+    <script is:inline type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "@id": `${SITE.url}/#organization`,
+      "name": SITE.title,
+      "url": SITE.url,
+      "logo": `${SITE.url}/assets/images/logo.png`,
+      "description": SITE.description
+    })} />
+
+    <!-- WebSite Schema (JSON-LD) — Helps search engines understand site structure -->
+    <script is:inline type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "@id": `${SITE.url}/#website`,
+      "name": SITE.title,
+      "url": SITE.url,
+      "description": SITE.description,
+      "publisher": {
+        "@id": `${SITE.url}/#organization`
+      }
+    })} />
+
+    <!-- Theme: Apply stored preference before paint to prevent FOUC -->
+    <script is:inline>
+      (function() {
+        var t = localStorage.getItem('theme') || 'light';
+        var dark = t === 'dark' || (t === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+        if (dark) document.documentElement.classList.add('dark');
+      })();
+    </script>
+
+    <!-- Slot for page-specific head elements -->
+    <slot name="head" />
+
+    <!-- View Transitions: SPA-like navigation with native browser API -->
+    <ClientRouter fallback="swap" />
+  </head>
+
+  <body class="bg-white dark:bg-gray-950 text-gray-900 dark:text-gray-100 antialiased overflow-x-hidden">
+    <!--
+      Skip Link: Provides keyboard users a quick way to bypass navigation
+      and jump directly to the main content. WCAG 2.1 requirement.
+    -->
+    <a
+      href="#main"
+      class="skip-link sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-emerald-600 focus:text-white focus:rounded-md focus:outline-none"
+    >
+      Skip to main content
+    </a>
+
+    <!-- Site Navigation -->
+    <Nav currentPath={currentPath} transition:persist />
+
+    <!--
+      Layout Container: Centers content with max-width constraint.
+    -->
+    <div class="max-w-6xl mx-auto px-6">
+      <!--
+        Main Content Area: Primary content wrapper.
+        The #main ID is the target for the skip-link above.
+        tabindex="-1" allows programmatic focus when navigating via skip link.
+      -->
+      <main id="main" class="site-main pb-20 lg:pb-0" role="main" tabindex="-1">
+        <slot />
+      </main>
+    </div>
+
+    <!-- Site Footer -->
+    <Footer />
+
+    <!-- Mobile Bottom Navigation: Sticky navigation for mobile devices -->
+    <!-- Uses client:idle to defer hydration until main thread is idle (performance optimization) -->
+    <MobileBottomNav client:idle currentPath={currentPath} />
+
+    <!-- Toast Notifications: Global toast container for notifications -->
+    <!-- Uses client:idle since toasts aren't needed until user interaction -->
+    <Toaster client:idle />
+
+    <!-- Slot for page-specific scripts -->
+    <slot name="scripts" />
+
+    <!-- Scroll Fade-In Animation Script -->
+    <script is:inline>
+      // Intersection Observer for scroll animations
+      // Uses astro:page-load to work with View Transitions (fires on initial load + navigations)
+      function initScrollAnimations() {
+        const animatedElements = document.querySelectorAll('[data-animate]:not(.animate-in)');
+
+        if (animatedElements.length === 0) return;
+
+        const observer = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                entry.target.classList.add('animate-in');
+                observer.unobserve(entry.target); // Only animate once
+              }
+            });
+          },
+          {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px',
+          }
+        );
+
+        animatedElements.forEach((el) => observer.observe(el));
+      }
+      document.addEventListener('astro:page-load', initScrollAnimations);
+    </script>
+
+    <!-- Re-apply dark mode after View Transition swaps the DOM -->
+    <script is:inline>
+      document.addEventListener('astro:after-swap', function() {
+        var t = localStorage.getItem('theme') || 'light';
+        var dark = t === 'dark' || (t === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+        document.documentElement.classList.toggle('dark', dark);
+      });
+    </script>
+  </body>
+</html>
+
+<style is:global>
+  /*
+   * Skip Link Styles
+   * Hidden by default, visible on focus for keyboard users.
+   */
+  .skip-link {
+    position: absolute;
+    left: -9999px;
+    top: auto;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+
+  .skip-link:focus {
+    position: fixed;
+    top: 1rem;
+    left: 1rem;
+    width: auto;
+    height: auto;
+    padding: 0.75rem 1.5rem;
+    background: var(--color-accent-primary);
+    color: var(--color-bg);
+    border-radius: var(--radius-md);
+    z-index: 9999;
+    outline: 2px solid var(--color-fg);
+    outline-offset: 2px;
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  /*
+   * Cyber Shell (body base styles)
+   * Matches the Jekyll cyber-shell class
+   */
+  .cyber-shell {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+    background: var(--color-bg);
+    color: var(--color-fg);
+  }
+
+  /*
+   * Main Content Area
+   */
+  .site-main {
+    flex: 1 0 auto;
+    width: 100%;
+  }
+
+  /*
+   * Skip Link Target Focus Styling
+   * When skip link is activated, the main content area receives
+   * visual focus indication via :target pseudo-class.
+   */
+  #main:target,
+  #main:focus {
+    outline: 2px dashed var(--color-accent-primary);
+    outline-offset: 4px;
+    scroll-margin-top: 1rem;
+  }
+
+  /* Remove outline on mouse click but keep for keyboard */
+  #main:focus:not(:focus-visible) {
+    outline: none;
+  }
+
+  /*
+   * Screen Reader Only (utility class)
+   * Used for accessibility, visually hidden but readable by screen readers
+   */
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+  }
+
+  /*
+   * Scroll Fade-In Animation Styles
+   * Elements with [data-animate] start hidden and translate up.
+   * When .animate-in is added, they fade in and move to position.
+   */
+  [data-animate] {
+    opacity: 0;
+    transform: translateY(1rem);
+    transition: opacity 300ms ease-out, transform 300ms ease-out;
+  }
+
+  [data-animate].animate-in {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Respect user preference for reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    [data-animate] {
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
+  }
+</style>

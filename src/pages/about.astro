@@ -1,0 +1,266 @@
+---
+/**
+ * About Page
+ * ==========
+ * CUSTOMIZE: Replace all placeholder content with your own story, values, and services.
+ */
+
+import PageLayout from "@/layouts/PageLayout.astro";
+import PageBackground from "@/components/PageBackground.astro";
+import AnimatedSection from "@/components/AnimatedSection.astro";
+import SectionConnector from "@/components/SectionConnector.astro";
+import CTASection from "@/components/CTASection.astro";
+import { SITE } from "@/data/site";
+import { Search, Wrench, Key, Lightbulb, Shield, Target, Handshake, Rocket, MapPin, Clock, BookOpen } from "lucide-react";
+
+// Page metadata — CUSTOMIZE
+const title = "About";
+const description = `Learn about ${SITE.title} and how we help small businesses succeed online.`;
+
+// Structured data for SEO — CUSTOMIZE
+const localBusinessSchema = {
+  "@context": "https://schema.org",
+  "@type": "LocalBusiness",
+  "@id": `${SITE.url}/#organization`,
+  "name": SITE.title,
+  "description": SITE.description,
+  "url": SITE.url,
+  "areaServed": [
+    {
+      "@type": "Country",
+      "name": "United States",
+      "description": "Remote services available nationwide"
+    }
+  ],
+  "openingHoursSpecification": {
+    "@type": "OpeningHoursSpecification",
+    "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+    "opens": "09:00",
+    "closes": "17:00"
+  }
+};
+---
+
+<PageBackground>
+<PageLayout
+  title={title}
+  description={description}
+  layoutWidth="wide"
+  schemaType="AboutPage"
+>
+  <!-- LocalBusiness structured data -->
+  <Fragment slot="head">
+    <script
+      is:inline
+      type="application/ld+json"
+      set:html={JSON.stringify(localBusinessSchema)}
+    />
+  </Fragment>
+
+  <!-- Interior Page Hero -->
+  <!-- CUSTOMIZE: Update headline and description -->
+  <AnimatedSection animation="fade-up" delay={0} as="header" class="text-center mb-16 relative">
+    <div
+      class="absolute -top-8 right-[10%] w-48 h-48 md:w-72 md:h-72 bg-linear-to-br from-emerald-200/30 dark:from-emerald-800/15 to-teal-100/20 dark:to-teal-900/10 rounded-full blur-3xl pointer-events-none"
+      aria-hidden="true"
+    />
+    <div
+      class="absolute top-12 left-[5%] w-32 h-32 md:w-48 md:h-48 bg-linear-to-tr from-amber-100/40 dark:from-amber-900/20 to-orange-100/30 dark:to-orange-900/15 rounded-full blur-2xl pointer-events-none"
+      aria-hidden="true"
+    />
+
+    <p class="text-sm font-medium uppercase tracking-wide text-emerald-700 dark:text-emerald-400 mb-4">
+      Our Story
+    </p>
+    <h1 class="text-4xl sm:text-5xl lg:text-6xl font-serif font-semibold text-gray-900 dark:text-gray-100 leading-tight mb-6">
+      Built for <span class="bg-linear-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">Results</span>
+    </h1>
+    <p class="text-lg sm:text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+      We help small businesses build a strong online presence with modern, fast websites and smart digital strategy.
+    </p>
+  </AnimatedSection>
+
+  <!-- Our Story Section -->
+  <!-- CUSTOMIZE: Replace with your own story -->
+  <AnimatedSection animation="fade-up" delay={100} as="section" class="mb-16">
+    <h2 class="text-2xl font-bold text-fg-bold mb-6">Our Story</h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+      <div class="space-y-4">
+        <p>
+          We started this business because we saw too many small businesses stuck with slow,
+          outdated websites that didn't represent the quality of their work. The big agencies
+          charge a fortune. The DIY builders leave you with something generic.
+        </p>
+        <p>
+          We believe every business deserves a website that's fast, looks great, and actually
+          helps bring in customers. We use modern tools to build sites that load instantly,
+          rank well in search, and are easy to maintain.
+        </p>
+        <p>
+          Our approach is simple: understand your business, build something that works,
+          and hand you the keys. No lock-in, no mystery fees, no waiting weeks for a small change.
+        </p>
+      </div>
+      <div>
+        <h3 class="text-xl font-semibold text-fg-bold mb-4">What You Get</h3>
+        <p class="text-fg-muted mb-4">Here's what working with us looks like:</p>
+        <ul class="space-y-2 text-fg-muted">
+          <li>- A website that loads fast and looks professional</li>
+          <li>- Full ownership of your code and content</li>
+          <li>- Clear documentation so you can make updates yourself</li>
+          <li>- Ongoing support when you need it</li>
+        </ul>
+      </div>
+    </div>
+  </AnimatedSection>
+
+  <SectionConnector variant="wave" color="warm" />
+
+  <!-- Our Approach Section -->
+  <!-- CUSTOMIZE: Update process steps -->
+  <AnimatedSection animation="fade-up" delay={0} as="section" class="mb-16 bg-white/60 dark:bg-gray-900/60 backdrop-blur-sm border border-emerald-100/50 dark:border-emerald-800/50 p-8 rounded-xl shadow-sm">
+    <h2 class="text-2xl font-bold text-fg-bold mb-4 text-center">How We Work</h2>
+    <p class="text-center text-fg-muted mb-8 max-w-2xl mx-auto">
+      A straightforward process designed to get you great results without the runaround.
+    </p>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div class="text-center">
+        <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-emerald-50 dark:bg-emerald-950 border border-emerald-200/50 dark:border-emerald-700/50 flex items-center justify-center shadow-sm">
+          <Search className="w-7 h-7 text-emerald-600" />
+        </div>
+        <h3 class="text-lg font-bold text-fg-bold">Listen First</h3>
+        <p class="text-sm text-fg-muted mt-2">We start by understanding your business, your audience, and what you need your site to do.</p>
+      </div>
+      <div class="text-center">
+        <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-emerald-50 dark:bg-emerald-950 border border-emerald-200/50 dark:border-emerald-700/50 flex items-center justify-center shadow-sm">
+          <Wrench className="w-7 h-7 text-emerald-600" />
+        </div>
+        <h3 class="text-lg font-bold text-fg-bold">Build It Right</h3>
+        <p class="text-sm text-fg-muted mt-2">We design and develop with performance, SEO, and user experience as top priorities.</p>
+      </div>
+      <div class="text-center">
+        <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-emerald-50 dark:bg-emerald-950 border border-emerald-200/50 dark:border-emerald-700/50 flex items-center justify-center shadow-sm">
+          <Key className="w-7 h-7 text-emerald-600" />
+        </div>
+        <h3 class="text-lg font-bold text-fg-bold">Hand You the Keys</h3>
+        <p class="text-sm text-fg-muted mt-2">You own everything. Full documentation, training, and no dependency on us to make basic changes.</p>
+      </div>
+    </div>
+  </AnimatedSection>
+
+  <SectionConnector variant="curve" color="neutral" />
+
+  <!-- Values Section -->
+  <!-- CUSTOMIZE: Update values to reflect your business -->
+  <AnimatedSection animation="fade-up" delay={0} as="section" class="mb-16">
+    <h2 class="text-2xl font-bold text-fg-bold mb-4">Our Values</h2>
+    <p class="text-fg-muted mb-8">The principles that guide every project.</p>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div class="bg-white/60 dark:bg-gray-900/60 backdrop-blur-sm border border-gray-100/50 dark:border-gray-800/50 p-6 rounded-lg shadow-sm hover:shadow-md hover:border-emerald-200/50 dark:hover:border-emerald-700/50 transition-all duration-300">
+        <div class="flex items-center gap-3 mb-3">
+          <div class="w-10 h-10 rounded-full bg-emerald-50 dark:bg-emerald-950 border border-emerald-200/50 dark:border-emerald-700/50 flex items-center justify-center">
+            <Lightbulb className="w-5 h-5 text-emerald-600" />
+          </div>
+          <h3 class="text-lg font-bold text-fg-bold">Clarity Over Complexity</h3>
+        </div>
+        <p class="text-fg-muted">
+          We keep things simple and explain everything in plain language.
+          No jargon, no confusion — just clear communication.
+        </p>
+      </div>
+      <div class="bg-white/60 dark:bg-gray-900/60 backdrop-blur-sm border border-gray-100/50 dark:border-gray-800/50 p-6 rounded-lg shadow-sm hover:shadow-md hover:border-emerald-200/50 dark:hover:border-emerald-700/50 transition-all duration-300">
+        <div class="flex items-center gap-3 mb-3">
+          <div class="w-10 h-10 rounded-full bg-emerald-50 dark:bg-emerald-950 border border-emerald-200/50 dark:border-emerald-700/50 flex items-center justify-center">
+            <Shield className="w-5 h-5 text-emerald-600" />
+          </div>
+          <h3 class="text-lg font-bold text-fg-bold">Quality First</h3>
+        </div>
+        <p class="text-fg-muted">
+          We build things the right way the first time. Performance, accessibility,
+          and clean code are not optional extras.
+        </p>
+      </div>
+      <div class="bg-white/60 dark:bg-gray-900/60 backdrop-blur-sm border border-gray-100/50 dark:border-gray-800/50 p-6 rounded-lg shadow-sm hover:shadow-md hover:border-emerald-200/50 dark:hover:border-emerald-700/50 transition-all duration-300">
+        <div class="flex items-center gap-3 mb-3">
+          <div class="w-10 h-10 rounded-full bg-emerald-50 dark:bg-emerald-950 border border-emerald-200/50 dark:border-emerald-700/50 flex items-center justify-center">
+            <Target className="w-5 h-5 text-emerald-600" />
+          </div>
+          <h3 class="text-lg font-bold text-fg-bold">Results Matter</h3>
+        </div>
+        <p class="text-fg-muted">
+          A beautiful website means nothing if it doesn't help your business.
+          We focus on outcomes, not vanity metrics.
+        </p>
+      </div>
+      <div class="bg-white/60 dark:bg-gray-900/60 backdrop-blur-sm border border-gray-100/50 dark:border-gray-800/50 p-6 rounded-lg shadow-sm hover:shadow-md hover:border-emerald-200/50 dark:hover:border-emerald-700/50 transition-all duration-300">
+        <div class="flex items-center gap-3 mb-3">
+          <div class="w-10 h-10 rounded-full bg-emerald-50 dark:bg-emerald-950 border border-emerald-200/50 dark:border-emerald-700/50 flex items-center justify-center">
+            <Handshake className="w-5 h-5 text-emerald-600" />
+          </div>
+          <h3 class="text-lg font-bold text-fg-bold">Partnership</h3>
+        </div>
+        <p class="text-fg-muted">
+          We don't disappear after launch. We're here when you need us,
+          whether it's a quick question or a new feature.
+        </p>
+      </div>
+    </div>
+  </AnimatedSection>
+
+  <SectionConnector variant="wave" color="cool" />
+
+  <!-- Why Work With Us Section -->
+  <!-- CUSTOMIZE: Update differentiators -->
+  <AnimatedSection animation="fade-up" delay={0} as="section" class="mb-16">
+    <h2 class="text-2xl font-bold text-fg-bold mb-4">Why Work With Us?</h2>
+    <p class="text-fg-muted mb-8">What sets us apart.</p>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div class="text-center p-6 bg-white/60 dark:bg-gray-900/60 backdrop-blur-sm border border-gray-100/50 dark:border-gray-800/50 rounded-xl shadow-sm hover:shadow-md hover:border-emerald-200/50 dark:hover:border-emerald-700/50 transition-all duration-300">
+        <div class="w-14 h-14 mx-auto mb-4 rounded-full bg-emerald-50 dark:bg-emerald-950 border border-emerald-200/50 dark:border-emerald-700/50 flex items-center justify-center">
+          <Rocket className="w-6 h-6 text-emerald-600" />
+        </div>
+        <h3 class="font-bold text-fg-bold mb-2">Fast & Modern</h3>
+        <p class="text-sm text-fg-muted">
+          Sites built with the latest tools for speed, SEO, and great user experience.
+        </p>
+      </div>
+      <div class="text-center p-6 bg-white/60 dark:bg-gray-900/60 backdrop-blur-sm border border-gray-100/50 dark:border-gray-800/50 rounded-xl shadow-sm hover:shadow-md hover:border-emerald-200/50 dark:hover:border-emerald-700/50 transition-all duration-300">
+        <div class="w-14 h-14 mx-auto mb-4 rounded-full bg-emerald-50 dark:bg-emerald-950 border border-emerald-200/50 dark:border-emerald-700/50 flex items-center justify-center">
+          <MapPin className="w-6 h-6 text-emerald-600" />
+        </div>
+        <h3 class="font-bold text-fg-bold mb-2">Right-Sized</h3>
+        <p class="text-sm text-fg-muted">
+          Solutions that fit your budget and needs. No upselling or unnecessary complexity.
+        </p>
+      </div>
+      <div class="text-center p-6 bg-white/60 dark:bg-gray-900/60 backdrop-blur-sm border border-gray-100/50 dark:border-gray-800/50 rounded-xl shadow-sm hover:shadow-md hover:border-emerald-200/50 dark:hover:border-emerald-700/50 transition-all duration-300">
+        <div class="w-14 h-14 mx-auto mb-4 rounded-full bg-emerald-50 dark:bg-emerald-950 border border-emerald-200/50 dark:border-emerald-700/50 flex items-center justify-center">
+          <Clock className="w-6 h-6 text-emerald-600" />
+        </div>
+        <h3 class="font-bold text-fg-bold mb-2">Plain Language</h3>
+        <p class="text-sm text-fg-muted">
+          We explain things clearly. No jargon, no condescension, no acronyms without explanation.
+        </p>
+      </div>
+      <div class="text-center p-6 bg-white/60 dark:bg-gray-900/60 backdrop-blur-sm border border-gray-100/50 dark:border-gray-800/50 rounded-xl shadow-sm hover:shadow-md hover:border-emerald-200/50 dark:hover:border-emerald-700/50 transition-all duration-300">
+        <div class="w-14 h-14 mx-auto mb-4 rounded-full bg-emerald-50 dark:bg-emerald-950 border border-emerald-200/50 dark:border-emerald-700/50 flex items-center justify-center">
+          <BookOpen className="w-6 h-6 text-emerald-600" />
+        </div>
+        <h3 class="font-bold text-fg-bold mb-2">Full Ownership</h3>
+        <p class="text-sm text-fg-muted">
+          You own your code, your content, and your hosting. No vendor lock-in.
+        </p>
+      </div>
+    </div>
+  </AnimatedSection>
+
+  <!-- CTA Section -->
+  <!-- CUSTOMIZE: Update CTA text -->
+  <CTASection
+    headline="Ready to get started?"
+    description="Tell us about your project and we'll get back to you with a plan."
+    primaryText="Get in Touch"
+    primaryUrl="/contact/"
+  />
+</PageLayout>
+</PageBackground>

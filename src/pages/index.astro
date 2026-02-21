@@ -1,0 +1,110 @@
+---
+/**
+ * Homepage
+ * ========
+ * Main landing page structured as:
+ * Hero → Services → CTA → Contact
+ *
+ * CUSTOMIZE: Update headlines, descriptions, and CTAs below.
+ */
+
+// Data
+import { SITE } from "@/data/site";
+
+// Layout and Components
+import Layout from "../layouts/Layout.astro";
+import Hero from "../components/Hero.astro";
+import ServicesSection from "../components/ServicesSection.astro";
+import CTASection from "../components/CTASection.astro";
+import ContactForm from "../components/ContactForm.tsx";
+import SectionHeading from "../components/SectionHeading.astro";
+import PageBackground from "../components/PageBackground.astro";
+import SectionConnector from "../components/SectionConnector.astro";
+
+// Page metadata
+const pageTitle = "Home";
+const pageDescription = SITE.description;
+
+// ProfessionalService structured data for SEO
+const professionalServiceSchema = {
+  "@context": "https://schema.org",
+  "@type": "ProfessionalService",
+  "name": SITE.title,
+  "description": SITE.description,
+  "url": SITE.url,
+  "areaServed": {
+    "@type": "Country",
+    "name": "United States"
+  },
+  "priceRange": "$$"
+};
+---
+
+<Layout title={pageTitle} description={pageDescription}>
+  <!-- Organization structured data for SEO -->
+  <script is:inline slot="head" type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": SITE.title,
+    "url": SITE.url,
+    "description": SITE.description,
+    "sameAs": []
+  })} />
+
+  <!-- ProfessionalService structured data for SEO -->
+  <script is:inline slot="head" type="application/ld+json" set:html={JSON.stringify(professionalServiceSchema)} />
+
+  <PageBackground>
+  <!-- Main Content -->
+  <main>
+    <!-- HERO SECTION -->
+    <!-- CUSTOMIZE: Update title, accent word, subtitle, and CTA text -->
+    <Hero
+      id="intro"
+      title="Build Something"
+      accent="Beautiful"
+      subtitle="We help small businesses create fast, modern websites and digital systems that work as hard as you do. No jargon, no bloat — just clean solutions that get results."
+      primaryCtaText="Get Started"
+      primaryCtaUrl="#contact"
+      eyebrow="Modern Web Solutions"
+    />
+
+    <!-- Visual connector: Hero → Services -->
+    <SectionConnector variant="wave" color="warm" />
+
+    <!-- SERVICES SECTION -->
+    <ServicesSection id="services" data-animate />
+
+    <!-- Visual connector: Services → CTA -->
+    <SectionConnector variant="curve" color="neutral" />
+
+    <!-- CTA SECTION -->
+    <!-- CUSTOMIZE: Update headline and description -->
+    <CTASection
+      id="cta"
+      headline="Ready to level up your online presence?"
+      description="Tell us about your project and we'll get back to you within 24 hours. No pressure, no obligations — just a friendly conversation about what's possible."
+      primaryText="Get Started"
+      primaryUrl="#contact"
+      data-animate
+    />
+
+    <!-- CONTACT SECTION -->
+    <section id="contact" class="pt-16 pb-12 lg:pt-24 lg:pb-16 bg-white dark:bg-gray-950" data-animate>
+      <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- CUSTOMIZE: Update heading and subtitle -->
+        <SectionHeading
+          title="Let's Talk"
+          size="lg"
+          align="center"
+          subtitle="Have a project in mind? Drop us a line and we'll figure out the best way to help."
+          class="mb-12"
+        />
+        <div class="max-w-2xl mx-auto">
+          <ContactForm client:visible />
+        </div>
+      </div>
+    </section>
+  </main>
+  </PageBackground>
+</Layout>

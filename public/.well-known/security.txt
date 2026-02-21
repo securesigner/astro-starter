@@ -1,0 +1,7 @@
+# Security Policy
+# RFC 9116 — https://www.rfc-editor.org/rfc/rfc9116
+
+Contact: https://yourdomain.com/contact/
+Preferred-Languages: en
+Canonical: https://yourdomain.com/.well-known/security.txt
+Expires: 2027-02-15T00:00:00.000Z

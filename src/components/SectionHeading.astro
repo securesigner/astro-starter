@@ -1,0 +1,104 @@
+---
+/**
+ * SectionHeading — Consistent section titles
+ * ==========================================
+ * A reusable component for page section headings with:
+ * - Configurable heading level (h2, h3, h4)
+ * - Size variants (sm, md, lg, xl)
+ * - Accent color options (primary, secondary, tertiary)
+ * - Optional subtitle/description
+ * - Alignment variants (left, center, right)
+ * - Consistent spacing
+ */
+
+export interface Props {
+  /** The heading text */
+  title: string;
+  /** Heading level - defaults to h2 for sections */
+  level?: "h2" | "h3" | "h4";
+  /** Size variant - defaults to md */
+  size?: "sm" | "md" | "lg" | "xl";
+  /** Accent color for the title - defaults to primary */
+  accent?: "primary" | "secondary" | "tertiary" | "none";
+  /** Optional subtitle/description text */
+  subtitle?: string;
+  /** Text alignment - defaults to left */
+  align?: "left" | "center" | "right";
+  /** Optional ID for anchor linking */
+  id?: string;
+  /** Additional CSS classes for the wrapper */
+  class?: string;
+}
+
+const {
+  title,
+  level = "h2",
+  size = "md",
+  accent = "primary",
+  subtitle,
+  align = "left",
+  id,
+  class: className,
+} = Astro.props;
+
+// Size classes mapping
+const sizeClasses: Record<string, string> = {
+  sm: "text-lg md:text-xl",
+  md: "text-2xl md:text-3xl",
+  lg: "text-3xl md:text-4xl",
+  xl: "text-4xl md:text-5xl",
+};
+
+// Accent color classes mapping
+const accentClasses: Record<string, string> = {
+  primary: "text-accent-primary",
+  secondary: "text-accent-secondary",
+  tertiary: "text-accent-tertiary",
+  none: "text-fg",
+};
+
+// Alignment classes mapping
+const alignClasses: Record<string, string> = {
+  left: "text-left",
+  center: "text-center",
+  right: "text-right",
+};
+
+// Build the heading classes
+const headingClasses = [
+  sizeClasses[size],
+  "font-serif",
+  "font-semibold",
+  "text-fg",
+  "leading-tight",
+].join(" ");
+
+// Build the accent span classes
+const accentSpanClasses = accentClasses[accent];
+
+// Build wrapper classes
+const wrapperClasses = [
+  "mb-6",
+  alignClasses[align],
+  className,
+].filter(Boolean).join(" ");
+
+// Dynamic heading element
+const HeadingTag = level;
+---
+
+<div class={wrapperClasses}>
+  <HeadingTag class={headingClasses} id={id}>
+    {accent !== "none" ? (
+      <span class={accentSpanClasses}>{title}</span>
+    ) : (
+      title
+    )}
+  </HeadingTag>
+  {subtitle && (
+    <p class="mt-2 text-fg-muted">
+      {subtitle}
+    </p>
+  )}
+  <slot />
+</div>

@@ -1,0 +1,72 @@
+---
+/**
+ * CTA Section Component
+ * ====================================================
+ * A minimal, centered call-to-action section for page endings and conversion points.
+ * Clean light-theme design with emerald accents.
+ *
+ * Usage:
+ *   <CTASection
+ *     headline="Stop wrestling with spreadsheets every Friday"
+ *     description="Let's figure out where your time is going—free, casual, no pitch."
+ *     primaryText="Book a Quick Chat"
+ *     primaryUrl="/contact/"
+ *   />
+ */
+
+import { Button } from "@/components/ui/button";
+import { ArrowRight } from "lucide-react";
+
+export interface Props {
+  /** Main CTA headline text (required) */
+  headline: string;
+  /** Supporting description text below headline (optional) */
+  description?: string;
+  /** Primary CTA button text (required) */
+  primaryText: string;
+  /** Primary CTA button URL (required) */
+  primaryUrl: string;
+  /** Section ID for anchor links (optional) */
+  id?: string;
+  /** Spread remaining HTML attributes */
+  [key: string]: unknown;
+}
+
+const {
+  headline,
+  description,
+  primaryText,
+  primaryUrl,
+  id,
+  ...rest
+} = Astro.props;
+---
+
+<section class="py-10 sm:py-12 bg-emerald-50 dark:bg-emerald-950 text-center" id={id} {...rest}>
+  <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+    {/* Headline */}
+    <h2 class="text-xl sm:text-2xl lg:text-3xl font-serif font-semibold text-gray-900 dark:text-gray-100 leading-tight mb-4">
+      {headline}
+    </h2>
+
+    {/* Description */}
+    {description && (
+      <p class="text-gray-600 dark:text-gray-400 max-w-xl mx-auto mb-8">
+        {description}
+      </p>
+    )}
+
+    {/* Primary Button */}
+    <div class="flex justify-center mt-6">
+      <Button
+        asChild
+        className="min-h-[44px] px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white"
+      >
+        <a href={primaryUrl}>
+          {primaryText}
+          <ArrowRight className="ml-2 h-4 w-4" />
+        </a>
+      </Button>
+    </div>
+  </div>
+</section>

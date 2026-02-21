@@ -1,0 +1,87 @@
+---
+/**
+ * Footer Component (Astro)
+ * ========================
+ * Organized footer with:
+ * - Brand + tagline
+ * - Section-based navigation (from navigation.ts)
+ * - Copyright notice with dynamic year
+ * - Clean, light theme styling
+ *
+ * Usage:
+ *   <Footer />
+ */
+
+import { footerNav } from "@/data/navigation";
+import { SITE } from "@/data/site";
+
+// Dynamic copyright year
+const currentYear = new Date().getFullYear();
+---
+
+<footer class="bg-gray-50 dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 py-12" role="contentinfo">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <!-- Main footer grid -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-8 mb-8">
+      <!-- Brand column -->
+      <div class="col-span-2 md:col-span-1">
+        <a href="/" class="inline-flex items-center gap-3 hover:opacity-80 transition-opacity focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-2 rounded-sm">
+          <img
+            src="/assets/images/logo.png"
+            alt={SITE.title}
+            class="h-10 w-auto"
+            width="40"
+            height="40"
+            loading="lazy"
+            decoding="async"
+          />
+          <span class="text-lg font-semibold text-gray-900 dark:text-gray-100">{SITE.title}</span>
+        </a>
+        <p class="mt-3 text-sm text-gray-600 dark:text-gray-400 max-w-xs">
+          {SITE.tagline}
+        </p>
+      </div>
+
+      <!-- Navigation sections -->
+      {footerNav.map((section) => (
+        <div>
+          <h3 class="text-sm font-semibold text-gray-900 dark:text-gray-100 mb-3">
+            {section.title}
+          </h3>
+          <ul class="space-y-2">
+            {section.links.map((link) => (
+              <li>
+                <a
+                  href={link.url}
+                  class="inline-block py-1 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-2 rounded-sm"
+                >
+                  {link.title}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
+    </div>
+
+    <!-- Bottom bar -->
+    <div class="border-t border-gray-200 dark:border-gray-800 pt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <p class="text-sm text-gray-600 dark:text-gray-400">
+        &copy; {currentYear} {SITE.title}
+      </p>
+      <a
+        href="/privacy/"
+        class="inline-block py-1 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-2 rounded-sm"
+      >
+        Privacy
+      </a>
+    </div>
+
+    <!-- Professional disclaimer — CUSTOMIZE: Update with your own disclaimer if needed -->
+    <div class="border-t border-gray-200 dark:border-gray-800 mt-6 pt-4">
+      <p class="text-xs text-gray-600 dark:text-gray-500 text-center max-w-3xl mx-auto leading-relaxed">
+        {SITE.title} provides professional services as described on this site. Our services do not constitute legal, financial, tax, or investment advice. Please consult a licensed professional for specialized guidance.
+      </p>
+    </div>
+  </div>
+</footer>

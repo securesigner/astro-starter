@@ -1,0 +1,176 @@
+---
+/**
+ * Blog Index Page
+ * ===============================================
+ * Lists all published blog posts sorted by date descending.
+ * Features:
+ * - Paginated blog post listing
+ * - Category filtering (future enhancement)
+ * - Featured post highlighting
+ * - Glass morphism card styling
+ * - SEO optimized with structured data
+ *
+ * URL: /blog/
+ */
+
+import { getCollection } from 'astro:content';
+import { SITE } from '@/data/site';
+import Layout from '../../layouts/Layout.astro';
+import CTASection from '../../components/CTASection.astro';
+import BlogCard from '../../components/BlogCard.astro';
+import PageBackground from '../../components/PageBackground.astro';
+import SectionConnector from '../../components/SectionConnector.astro';
+import AnimatedSection from '../../components/AnimatedSection.astro';
+import { Badge } from '../../components/ui/badge';
+
+// Page metadata
+const pageTitle = 'Blog';
+const pageDescription = 'Practical guides for small businesses dealing with messy data, broken spreadsheets, and workflows that waste your time. No fluff, just fixes.';
+
+// Fetch all blog posts, filter drafts, and sort by date
+const allPosts = await getCollection('blog', ({ data }) => {
+  // In production, filter out drafts
+  return import.meta.env.PROD ? data.draft !== true : true;
+});
+
+// Sort by date descending (newest first)
+const sortedPosts = allPosts.sort((a, b) =>
+  new Date(b.data.date).getTime() - new Date(a.data.date).getTime()
+);
+
+// Get unique categories for filtering
+const allCategories = [...new Set(sortedPosts.flatMap(post => post.data.categories || []))];
+---
+
+<Layout
+  title={pageTitle}
+  description={pageDescription}
+  type="website"
+>
+  <!-- Schema.org Blog structured data -->
+  <Fragment slot="head">
+    <script is:inline type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "Blog",
+      "name": `${SITE.title} Blog`,
+      "description": pageDescription,
+      "url": `${SITE.url}/blog/`,
+      "publisher": {
+        "@type": "Organization",
+        "name": SITE.title,
+        "url": SITE.url
+      },
+      "blogPost": sortedPosts.slice(0, 10).map(post => ({
+        "@type": "BlogPosting",
+        "headline": post.data.title,
+        "datePublished": post.data.date.toISOString(),
+        "url": `${SITE.url}/blog/${post.slug}/`
+      }))
+    })} />
+  </Fragment>
+
+  <PageBackground>
+  <!-- Main Content -->
+  <main class="relative z-10 min-h-screen">
+    <!-- Hero Section -->
+    <section class="relative py-16 md:py-24 overflow-hidden">
+      <!-- Decorative Gradient Blobs -->
+      <div
+        class="absolute top-8 right-[5%] sm:right-[10%] w-48 h-48 sm:w-72 sm:h-72 md:w-80 md:h-80 bg-linear-to-br from-emerald-200/40 dark:from-emerald-800/20 to-teal-100/30 dark:to-teal-900/15 rounded-full blur-3xl pointer-events-none"
+        aria-hidden="true"
+      />
+      <div
+        class="absolute -bottom-10 left-[2%] sm:left-[5%] w-40 h-40 sm:w-56 sm:h-56 bg-linear-to-tr from-amber-100/50 dark:from-amber-900/25 to-orange-100/40 dark:to-orange-900/20 rounded-full blur-2xl pointer-events-none"
+        aria-hidden="true"
+      />
+
+      <div class="container mx-auto px-4 md:px-6 max-w-6xl text-center relative">
+        <AnimatedSection animation="fade-up" delay={0} duration={500}>
+          <p class="text-sm font-medium uppercase tracking-wide text-emerald-600 dark:text-emerald-400 mb-4">
+            Insights & Guides
+          </p>
+        </AnimatedSection>
+
+        <AnimatedSection animation="fade-up" delay={100} duration={600}>
+          <h1 class="font-serif text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-gray-900 dark:text-gray-100 tracking-tight mb-6 text-balance">
+            Latest <span class="bg-linear-to-r from-emerald-600 to-emerald-700 bg-clip-text text-transparent">Insights</span>
+          </h1>
+        </AnimatedSection>
+
+        <AnimatedSection animation="fade-up" delay={200} duration={600}>
+          <p class="text-lg md:text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto mb-8">
+            Practical guides for anyone dealing with messy data, broken workflows, or spreadsheets that got out of control.
+          </p>
+        </AnimatedSection>
+
+        <!-- Category filter pills (visual, future enhancement) -->
+        {allCategories.length > 0 && (
+          <AnimatedSection animation="fade-up" delay={300} duration={600}>
+            <div class="flex flex-wrap justify-center gap-2 mt-8">
+              <Badge variant="default" size="lg" shape="pill">
+                All Posts
+              </Badge>
+              {allCategories.slice(0, 6).map((category) => (
+                <Badge variant="outline" size="lg" shape="pill" className="hover:bg-accent-primary/20 hover:text-accent-primary-light cursor-pointer">
+                  {category}
+                </Badge>
+              ))}
+            </div>
+          </AnimatedSection>
+        )}
+      </div>
+    </section>
+
+    <!-- Visual connector: Hero → Grid -->
+    <SectionConnector variant="wave" color="warm" />
+
+    <!-- Blog Post Grid -->
+    <section class="py-12">
+      <div class="container mx-auto px-4 md:px-6 max-w-6xl">
+
+        <!-- Posts count -->
+        <p class="text-gray-500 dark:text-gray-400 font-mono text-sm mb-8">
+          {sortedPosts.length} articles
+        </p>
+
+        <!-- Post Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {sortedPosts.map((post, index) => (
+            <AnimatedSection animation="fade-up" delay={index < 6 ? index * 50 : 0} duration={500}>
+              <BlogCard
+                title={post.data.title}
+                slug={post.slug}
+                date={post.data.date}
+                excerpt={post.data.excerpt}
+                description={post.data.description}
+                author={post.data.author}
+                categories={post.data.categories}
+                image={post.data.image}
+                featured={index === 0}
+              />
+            </AnimatedSection>
+          ))}
+        </div>
+
+        <!-- Empty state -->
+        {sortedPosts.length === 0 && (
+          <div class="text-center py-16">
+            <p class="text-gray-500 dark:text-gray-400 font-mono">No posts yet. Check back soon!</p>
+          </div>
+        )}
+      </div>
+    </section>
+
+    <!-- Visual connector: Grid → CTA -->
+    <SectionConnector variant="curve" color="cool" />
+
+    <!-- CTA Section -->
+    <CTASection
+      headline="Drowning in spreadsheets?"
+      description="We help small businesses make sense of their data. Tell us what's frustrating you."
+      primaryText="Get My Free Assessment"
+      primaryUrl="/contact/"
+    />
+  </main>
+  </PageBackground>
+</Layout>

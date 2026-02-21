@@ -1,0 +1,204 @@
+---
+/**
+ * SectionConnector Component
+ * =========================================================
+ * Subtle visual connector that creates smooth transitions between sections.
+ * Uses organic wave shapes with soft gradient fades to maintain visual flow.
+ *
+ * Features:
+ * - Multiple connector variants (wave, curve, gradient-fade)
+ * - Configurable colors to match warm/cool theme
+ * - Subtle and decorative, never distracting
+ * - Proper z-index management
+ *
+ * Usage:
+ *   <SectionConnector variant="wave" color="warm" />
+ *   <SectionConnector variant="curve" color="cool" />
+ *   <SectionConnector variant="gradient-fade" />
+ */
+
+export interface Props {
+  /** Visual style variant */
+  variant?: 'wave' | 'curve' | 'gradient-fade' | 'dots';
+  /** Color theme: warm (amber), cool (emerald), or neutral */
+  color?: 'warm' | 'cool' | 'neutral';
+  /** Flip the connector vertically */
+  flip?: boolean;
+  /** Additional CSS classes */
+  class?: string;
+}
+
+const {
+  variant = 'wave',
+  color = 'neutral',
+  flip = false,
+  class: className = '',
+} = Astro.props;
+
+// Color mapping for gradients — uses CSS custom properties from global.css
+// that automatically switch between light/dark mode values
+const colorMap = {
+  warm: {
+    from: 'var(--color-connector-warm-from)',
+    via: 'var(--color-connector-warm-via)',
+    to: 'var(--color-connector-warm-to)',
+    stroke: 'var(--color-connector-warm-stroke)',
+    dot: 'var(--color-connector-warm-dot)',
+  },
+  cool: {
+    from: 'var(--color-connector-cool-from)',
+    via: 'var(--color-connector-cool-via)',
+    to: 'var(--color-connector-cool-to)',
+    stroke: 'var(--color-connector-cool-stroke)',
+    dot: 'var(--color-connector-cool-dot)',
+  },
+  neutral: {
+    from: 'var(--color-connector-neutral-from)',
+    via: 'var(--color-connector-neutral-via)',
+    to: 'var(--color-connector-neutral-to)',
+    stroke: 'var(--color-connector-neutral-stroke)',
+    dot: 'var(--color-connector-neutral-dot)',
+  },
+};
+
+const colors = colorMap[color];
+
+// Generate unique IDs for SVG gradients
+const gradientId = `connector-grad-${Math.random().toString(36).substring(2, 9)}`;
+---
+
+{variant === 'wave' && (
+  <div
+    class:list={[
+      'section-connector section-connector--wave',
+      'w-full h-16 sm:h-20 lg:h-24 relative overflow-hidden pointer-events-none select-none',
+      flip && 'rotate-180',
+      className,
+    ]}
+    aria-hidden="true"
+  >
+    <svg
+      class="absolute inset-0 w-full h-full"
+      viewBox="0 0 1440 100"
+      preserveAspectRatio="none"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <defs>
+        <linearGradient id={gradientId} x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stop-color={colors.from} />
+          <stop offset="50%" stop-color={colors.via} />
+          <stop offset="100%" stop-color={colors.to} />
+        </linearGradient>
+      </defs>
+      <path
+        d="M0,60 C240,90 480,20 720,50 C960,80 1200,30 1440,60 L1440,100 L0,100 Z"
+        fill={`url(#${gradientId})`}
+      />
+      <path
+        d="M0,70 C360,95 720,35 1080,65 C1260,80 1380,55 1440,60"
+        stroke={colors.stroke}
+        stroke-width="1.5"
+        fill="none"
+        stroke-linecap="round"
+      />
+    </svg>
+  </div>
+)}
+
+{variant === 'curve' && (
+  <div
+    class:list={[
+      'section-connector section-connector--curve',
+      'w-full h-12 sm:h-16 lg:h-20 relative overflow-hidden pointer-events-none select-none',
+      flip && 'rotate-180',
+      className,
+    ]}
+    aria-hidden="true"
+  >
+    <svg
+      class="absolute inset-0 w-full h-full"
+      viewBox="0 0 1440 80"
+      preserveAspectRatio="none"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <defs>
+        <linearGradient id={gradientId} x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stop-color="transparent" />
+          <stop offset="15%" stop-color={colors.stroke} />
+          <stop offset="50%" stop-color={colors.stroke} />
+          <stop offset="85%" stop-color={colors.stroke} />
+          <stop offset="100%" stop-color="transparent" />
+        </linearGradient>
+      </defs>
+      <path
+        d="M0,40 Q720,80 1440,40"
+        stroke={`url(#${gradientId})`}
+        stroke-width="2"
+        fill="none"
+        stroke-linecap="round"
+      />
+      <!-- Subtle arc fill -->
+      <path
+        d="M0,40 Q720,80 1440,40 L1440,80 L0,80 Z"
+        fill={colors.from}
+        opacity="0.5"
+      />
+    </svg>
+  </div>
+)}
+
+{variant === 'gradient-fade' && (
+  <div
+    class:list={[
+      'section-connector section-connector--gradient-fade',
+      'w-full h-20 sm:h-24 lg:h-32 relative pointer-events-none select-none',
+      flip && 'rotate-180',
+      className,
+    ]}
+    aria-hidden="true"
+  >
+    <div
+      class="absolute inset-0"
+      style={`background: linear-gradient(to bottom, ${colors.from}, transparent);`}
+    />
+    <!-- Center decorative line -->
+    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-xs sm:max-w-md px-4">
+      <div
+        class="h-px w-full"
+        style={`background: linear-gradient(to right, transparent, ${colors.stroke}, transparent);`}
+      />
+    </div>
+  </div>
+)}
+
+{variant === 'dots' && (
+  <div
+    class:list={[
+      'section-connector section-connector--dots',
+      'w-full py-6 sm:py-8 relative pointer-events-none select-none flex items-center justify-center gap-2',
+      className,
+    ]}
+    aria-hidden="true"
+  >
+    <span
+      class="w-1.5 h-1.5 rounded-full opacity-40"
+      style={`background-color: ${colors.dot};`}
+    />
+    <span
+      class="w-2 h-2 rounded-full opacity-60"
+      style={`background-color: ${colors.dot};`}
+    />
+    <span
+      class="w-1.5 h-1.5 rounded-full opacity-40"
+      style={`background-color: ${colors.dot};`}
+    />
+  </div>
+)}
+
+<style>
+  .section-connector {
+    z-index: 1;
+  }
+</style>

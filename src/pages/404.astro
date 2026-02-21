@@ -1,0 +1,95 @@
+---
+/**
+ * 404 Page
+ * ========
+ * Custom 404 error page with helpful navigation links.
+ */
+
+import Layout from "@/layouts/Layout.astro";
+
+const title = "Page Not Found";
+const description = "The page you're looking for doesn't exist or has been moved.";
+---
+
+<Layout title={title} description={description} noindex={true}>
+  <main class="min-h-[80vh] flex items-center justify-center px-6 py-16">
+    <section class="glass-card p-8 md:p-12 rounded-2xl max-w-lg w-full text-center" aria-labelledby="error-heading">
+
+      <!-- 404 Illustration -->
+      <img
+        src="/assets/images/404-illustration.webp"
+        alt=""
+        class="w-full max-w-xs mx-auto mb-6 rounded-lg"
+        aria-hidden="true"
+        width="420"
+        height="314"
+        loading="eager"
+        fetchpriority="high"
+      />
+
+      <!-- Screen Reader Accessible Heading -->
+      <h1 id="error-heading" class="text-2xl md:text-3xl font-bold text-fg-bold mb-4">
+        Page Not Found
+      </h1>
+
+      <p class="text-fg-muted mb-8">
+        The page you're looking for doesn't exist or has been moved.
+        Let's get you somewhere useful.
+      </p>
+
+      <!-- Terminal-Style Prompt -->
+      <div class="font-mono text-sm text-accent-primary mb-6" aria-hidden="true">
+        $ finding you a better destination_
+      </div>
+
+      <!-- Navigation Links -->
+      <nav class="flex flex-col gap-3 mb-8" aria-label="Helpful navigation">
+        <a
+          href="/"
+          class="flex items-center gap-3 px-4 py-3 rounded-lg bg-bg-elevated hover:bg-accent-primary/10 transition-colors group"
+        >
+          <svg class="w-5 h-5 text-accent-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+          </svg>
+          <span class="text-fg-bold group-hover:text-accent-primary transition-colors">Start fresh at the homepage</span>
+        </a>
+
+        <a
+          href="/services/"
+          class="flex items-center gap-3 px-4 py-3 rounded-lg bg-bg-elevated hover:bg-accent-primary/10 transition-colors group"
+        >
+          <svg class="w-5 h-5 text-accent-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+          </svg>
+          <span class="text-fg-bold group-hover:text-accent-primary transition-colors">See how we can help</span>
+        </a>
+
+        <a
+          href="/blog/"
+          class="flex items-center gap-3 px-4 py-3 rounded-lg bg-bg-elevated hover:bg-accent-primary/10 transition-colors group"
+        >
+          <svg class="w-5 h-5 text-accent-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+          </svg>
+          <span class="text-fg-bold group-hover:text-accent-primary transition-colors">Read our latest posts</span>
+        </a>
+
+        <a
+          href="/contact/"
+          class="flex items-center gap-3 px-4 py-3 rounded-lg bg-bg-elevated hover:bg-accent-primary/10 transition-colors group"
+        >
+          <svg class="w-5 h-5 text-accent-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+          </svg>
+          <span class="text-fg-bold group-hover:text-accent-primary transition-colors">Get in touch</span>
+        </a>
+      </nav>
+
+      <!-- Help Hint -->
+      <p class="text-sm text-fg-muted">
+        Still can't find what you need? <a href="/contact/" class="text-accent-primary hover:underline">Drop us a note</a>—we're happy to point you in the right direction.
+      </p>
+
+    </section>
+  </main>
+</Layout>
