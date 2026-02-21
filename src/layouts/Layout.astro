@@ -95,8 +95,8 @@ const ogImage = image.startsWith("http") ? image : `${SITE.url}${image}`;
     <meta name="author" content={SITE.author} />
     <meta name="generator" content={Astro.generator} />
 
-    <!-- Theme Color -->
-    <meta name="theme-color" content="#ffffff" />
+    <!-- CUSTOMIZE: Update theme-color to match your brand (used by mobile browsers) -->
+    <meta name="theme-color" content={SITE.themeColor} />
 
     <!-- Open Graph Meta Tags -->
     <meta property="og:type" content={type} />
@@ -136,6 +136,7 @@ const ogImage = image.startsWith("http") ? image : `${SITE.url}${image}`;
     />
 
     <!-- Organization Schema (JSON-LD) — Site-wide brand identity for search engines -->
+    <!-- CUSTOMIZE: Add sameAs (social URLs), contactPoint, and other Organization fields -->
     <script is:inline type="application/ld+json" set:html={JSON.stringify({
       "@context": "https://schema.org",
       "@type": "Organization",

@@ -1,4 +1,6 @@
 ---
+# CUSTOMIZE: Replace this service with your own. Update title, description,
+# features, process, deliverables, FAQs, and body content below.
 title: "Web Design & Development"
 tagline: "Beautiful, fast websites that help your business grow"
 cta_text: "Start Your Project"
@@ -45,4 +47,4 @@ Your website is the foundation of your online presence. We design and build site
 
 Every project starts with understanding your goals. Whether you need a simple brochure site or a content-rich platform with a blog and service pages, we tailor the solution to fit your needs and budget. No bloated page builders or unnecessary complexity.
 
-We use modern tools like Astro to deliver sites that score high on performance benchmarks, rank well in search engines, and provide a smooth experience for every visitor regardless of their device or connection speed.
+We use modern frameworks and tools to deliver sites that score high on performance benchmarks, rank well in search engines, and provide a smooth experience for every visitor regardless of their device or connection speed.

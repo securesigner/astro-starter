@@ -27,6 +27,7 @@ A production-ready website template for small businesses, built with Astro 5 and
 - **4 layouts** — base, page, blog post, service page
 - **View Transitions** — SPA-like navigation without a SPA
 - **Tests** — Playwright E2E + Vitest unit tests
+- **CI/CD** — GitHub Actions workflow (lint, typecheck, build, test)
 - **Code quality** — ESLint, Prettier, TypeScript strict mode
 
 ## Quick Start
@@ -40,6 +41,8 @@ npm run dev
 
 # Open http://localhost:4321
 ```
+
+> **New to web development?** See [SETUP.md](SETUP.md) for a detailed getting started guide with prerequisites, step-by-step setup, and deployment instructions.
 
 ## Customization Guide
 

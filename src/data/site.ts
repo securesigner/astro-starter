@@ -14,6 +14,7 @@ export const SITE = {
   title: 'YOUR BUSINESS NAME',
   description:
     'A brief description of your business and what you do. Update this in src/data/site.ts.',
+  // NOTE: Also update the `site` field in astro.config.mjs to match this URL
   url: 'https://yourdomain.com',
   author: 'Your Name',
   tagline:

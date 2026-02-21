@@ -1,4 +1,6 @@
 ---
+# CUSTOMIZE: Replace this service with your own. Update title, description,
+# features, process, deliverables, FAQs, and body content below.
 title: "Ongoing Support & Maintenance"
 tagline: "Keep your website secure, updated, and running smoothly"
 cta_text: "Get Support"

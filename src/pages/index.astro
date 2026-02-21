@@ -25,7 +25,7 @@ import SectionConnector from "../components/SectionConnector.astro";
 const pageTitle = "Home";
 const pageDescription = SITE.description;
 
-// ProfessionalService structured data for SEO
+// CUSTOMIZE: Update areaServed, priceRange, and sameAs for your business
 const professionalServiceSchema = {
   "@context": "https://schema.org",
   "@type": "ProfessionalService",
@@ -42,6 +42,7 @@ const professionalServiceSchema = {
 
 <Layout title={pageTitle} description={pageDescription} image="/og/home.png">
   <!-- Organization structured data for SEO -->
+  <!-- CUSTOMIZE: Add your social profile URLs to sameAs (e.g., Twitter, LinkedIn, GitHub) -->
   <script is:inline slot="head" type="application/ld+json" set:html={JSON.stringify({
     "@context": "https://schema.org",
     "@type": "Organization",

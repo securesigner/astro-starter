@@ -5,6 +5,27 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.0.1] — 2026-02-21
+
+### Added
+
+- **SETUP.md** — step-by-step getting started guide for non-developer buyers
+- **GUMROAD.md** — product listing copy, feature bullets, and screenshot list for Gumroad
+- **GitHub Actions CI** — lint, typecheck, unit test, build, and E2E test workflow
+- **OG image Playwright tests** — E2E tests for all static and blog OG image routes
+- **CUSTOMIZE markers** in `global.css` (design tokens + dark mode), all 3 service content files, `index.astro` schema.org, `Layout.astro` schema.org + theme-color, and `Footer.astro`
+
+### Changed
+
+- **Dark mode contrast** — submit button now uses `dark:bg-emerald-600`, placeholders use `dark:text-gray-400`, character counter adjusted for dark backgrounds
+- **Theme-color meta tag** — now reads from `SITE.themeColor` instead of hardcoded `#ffffff`
+- **Service content** — removed Astro-specific branding from web-design.md body copy
+- **URL cross-references** — `site.ts` and `astro.config.mjs` now remind buyers to update both
+
+### Fixed
+
+- Select placeholder and input placeholder contrast in dark mode (WCAG AA compliance)
+
 ## [1.0.0] — 2026-02-21
 
 ### Added

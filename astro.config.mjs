@@ -6,6 +6,7 @@ import sitemap, { ChangeFreqEnum } from '@astrojs/sitemap';
 // https://astro.build/config
 export default defineConfig({
   // CUSTOMIZE: Set your production URL for canonical links and sitemap
+  // NOTE: Also update the `url` field in src/data/site.ts to match
   site: 'https://yourdomain.com',
 
   outDir: './dist',

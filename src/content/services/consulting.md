@@ -1,4 +1,6 @@
 ---
+# CUSTOMIZE: Replace this service with your own. Update title, description,
+# features, process, deliverables, FAQs, and body content below.
 title: "Technology Consulting"
 tagline: "Clear guidance to make confident technology decisions"
 cta_text: "Book a Consultation"

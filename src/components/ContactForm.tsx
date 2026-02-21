@@ -481,7 +481,7 @@ export default function ContactForm({
                 : `${formId}-name-hint`
             }
             className={cn(
-              "bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-gray-100 placeholder:text-gray-500 dark:placeholder:text-gray-500",
+              "bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-gray-100 placeholder:text-gray-500 dark:placeholder:text-gray-400",
               "focus:border-emerald-500 focus:ring-emerald-500",
               showError("name") && "border-red-500 focus:border-red-500"
             )}
@@ -535,7 +535,7 @@ export default function ContactForm({
                 : `${formId}-email-hint`
             }
             className={cn(
-              "bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-gray-100 placeholder:text-gray-500 dark:placeholder:text-gray-500",
+              "bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-gray-100 placeholder:text-gray-500 dark:placeholder:text-gray-400",
               "focus:border-emerald-500 focus:ring-emerald-500",
               showError("email") && "border-red-500 focus:border-red-500"
             )}
@@ -631,7 +631,7 @@ export default function ContactForm({
             }
             className={cn(
               "flex w-full rounded-md border px-3 py-2 text-base shadow-sm transition-colors",
-              "bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-700 text-gray-900 dark:text-gray-100 placeholder:text-gray-500 dark:placeholder:text-gray-500",
+              "bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-700 text-gray-900 dark:text-gray-100 placeholder:text-gray-500 dark:placeholder:text-gray-400",
               "focus:outline-none focus:ring-1 focus:border-emerald-500 focus:ring-emerald-500",
               "disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
               "min-h-[120px] resize-y",
@@ -651,7 +651,7 @@ export default function ContactForm({
                 "text-xs whitespace-nowrap transition-colors",
                 isError && "text-red-600 dark:text-red-400 font-medium",
                 isWarning && "text-amber-600 dark:text-amber-400",
-                !isError && !isWarning && "text-gray-500 dark:text-gray-500"
+                !isError && !isWarning && "text-gray-500 dark:text-gray-400"
               )}
               aria-label={`${charCount} of ${maxChars} characters used${isError ? ", limit exceeded" : isWarning ? ", approaching limit" : ""}`}
             >
@@ -702,7 +702,7 @@ export default function ContactForm({
           disabled={status === "submitting"}
           className={cn(
             "px-8 py-3 text-base font-semibold min-h-11",
-            "bg-emerald-700 hover:bg-emerald-800",
+            "bg-emerald-700 hover:bg-emerald-800 dark:bg-emerald-600 dark:hover:bg-emerald-500",
             "text-white shadow-sm",
             "transition-all duration-200",
             "disabled:opacity-50 disabled:cursor-not-allowed"

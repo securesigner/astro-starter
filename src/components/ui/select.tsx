@@ -30,7 +30,7 @@ const SelectTrigger = React.forwardRef<
       // Focus state: emerald accent ring
       "focus:outline-none focus:ring-1 focus:border-emerald-500 focus:ring-emerald-500",
       // Placeholder styling
-      "data-[placeholder]:text-gray-500 dark:data-[placeholder]:text-gray-500",
+      "data-[placeholder]:text-gray-500 dark:data-[placeholder]:text-gray-400",
       // Disabled state
       "disabled:cursor-not-allowed disabled:opacity-50",
       // Line clamp for overflow

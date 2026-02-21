@@ -34,6 +34,10 @@
    =============================================================================
    Maps CSS custom properties to Tailwind utilities via @theme directive.
    This enables usage like: text-accent-primary, bg-surface, shadow-glow-md
+
+   CUSTOMIZE: Update these design tokens (colors, fonts, spacing, shadows) to
+   match your brand. The emerald accent is a good starting point — swap it for
+   your primary brand color throughout.
    ============================================================================= */
 
 @theme {
@@ -341,6 +345,9 @@
    Overrides the @theme CSS custom properties when .dark class is on <html>.
    Components using tokens like bg-glass-bg, text-fg-bold, etc. will
    automatically pick up these dark values.
+
+   CUSTOMIZE: Adjust dark mode colors to complement your light theme changes
+   above. If you changed the accent color, update the dark accent values too.
    ============================================================================= */
 
 .dark {
