@@ -1,6 +1,6 @@
 ---
 title: "Welcome to Your New Website"
-date: 2024-01-15
+date: 2026-01-15
 author: "Your Name"
 author_key: "your-name"
 categories: ["announcements"]

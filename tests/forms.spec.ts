@@ -117,13 +117,30 @@ test.describe('Contact Form Validation', () => {
 
   test('service dropdown has options', async ({ page }) => {
     const form = page.locator('form').first();
-    const serviceSelect = form.locator('select[name="service"]');
 
-    // If service dropdown exists, check it has options
-    if (await serviceSelect.count() > 0) {
-      const options = await serviceSelect.locator('option').allTextContents();
-      expect(options.length).toBeGreaterThan(1);
+    // Scroll form into view to trigger client:visible hydration
+    await form.scrollIntoViewIfNeeded();
+    // Wait for React hydration of the Radix Select component
+    await page.waitForTimeout(2000);
+
+    // Check for native <select> element with actual options (not a Radix hidden select)
+    const nativeSelect = form.locator('select[name="service"]');
+    if (await nativeSelect.count() > 0) {
+      const options = await nativeSelect.locator('option').allTextContents();
+      if (options.length > 1) {
+        // Native select with real options — test passes
+        return;
+      }
     }
+
+    // Custom Radix/shadcn Select: open and verify options
+    const customSelect = form.locator('[role="combobox"], button[data-slot="select-trigger"]');
+    await expect(customSelect.first()).toBeVisible({ timeout: 10000 });
+    await customSelect.first().click();
+    const options = page.locator('[role="option"]');
+    await expect(options.first()).toBeVisible({ timeout: 5000 });
+    const optionCount = await options.count();
+    expect(optionCount).toBeGreaterThan(1);
   });
 
   test('form has submit button', async ({ page }) => {

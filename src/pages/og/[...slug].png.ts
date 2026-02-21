@@ -1,10 +1,12 @@
 /**
  * Dynamic OG Image Generation Endpoint
  * =====================================
- * Generates branded Open Graph images for blog posts at build time.
+ * Generates branded Open Graph images for blog posts and static pages at build time.
  * Uses satori + @resvg/resvg-js for server-side image rendering.
  *
- * URL Pattern: /og/blog/[slug].png
+ * URL Patterns:
+ *   /og/blog/[slug].png  — Blog posts
+ *   /og/[page].png       — Static pages (about, services, contact, etc.)
  *
  * CUSTOMIZE: Update COLORS and brand text to match your site.
  *
@@ -43,15 +45,36 @@ const fontBold = readFileSync(
 );
 
 /**
- * Generate static paths for all blog posts
+ * Static pages to generate OG images for
+ * CUSTOMIZE: Add or remove pages as needed
+ */
+const STATIC_PAGES = [
+  { slug: 'home', title: 'Home', category: SITE.tagline },
+  { slug: 'about', title: 'About Us', category: 'Company' },
+  { slug: 'services', title: 'Our Services', category: 'Services' },
+  { slug: 'contact', title: 'Contact Us', category: 'Contact' },
+  { slug: 'pricing', title: 'Pricing', category: 'Plans' },
+  { slug: 'blog', title: 'Blog', category: 'Insights' },
+  { slug: 'privacy', title: 'Privacy Policy', category: 'Legal' },
+];
+
+/**
+ * Generate static paths for all blog posts and static pages
  */
 export async function getStaticPaths() {
   const blogPosts = await getCollection('blog', ({ data }) => !data.draft);
 
-  return blogPosts.map((post) => ({
+  const blogPaths = blogPosts.map((post) => ({
     params: { slug: `blog/${post.slug}` },
-    props: { post },
+    props: { post, isStaticPage: false as const },
   }));
+
+  const staticPaths = STATIC_PAGES.map((page) => ({
+    params: { slug: page.slug },
+    props: { staticPage: page, isStaticPage: true as const },
+  }));
+
+  return [...blogPaths, ...staticPaths];
 }
 
 /**
@@ -212,17 +235,25 @@ function createOgImage(title: string, category: string) {
 }
 
 /**
- * Generate OG image for a blog post
+ * Generate OG image for a blog post or static page
  */
 export async function GET({ props }: APIContext) {
-  const { post } = props as { post: CollectionEntry<'blog'> };
+  let title: string;
+  let category: string;
 
-  if (!post) {
-    return new Response('Post not found', { status: 404 });
+  if (props.isStaticPage) {
+    const { staticPage } = props as { staticPage: (typeof STATIC_PAGES)[number]; isStaticPage: true };
+    title = staticPage.title;
+    category = staticPage.category;
+  } else {
+    const { post } = props as { post: CollectionEntry<'blog'>; isStaticPage: false };
+    if (!post) {
+      return new Response('Post not found', { status: 404 });
+    }
+    const { categories = [] } = post.data;
+    title = post.data.title;
+    category = categories[0] || 'Blog';
   }
-
-  const { title, categories = [] } = post.data;
-  const category = categories[0] || 'Blog';
 
   const options: SatoriOptions = {
     width: WIDTH,

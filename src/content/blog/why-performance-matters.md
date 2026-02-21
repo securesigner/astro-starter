@@ -1,6 +1,6 @@
 ---
 title: "Why Website Performance Matters for Small Businesses"
-date: 2024-01-05
+date: 2026-01-05
 categories: ["insights"]
 tags: ["performance", "seo", "business"]
 excerpt: "Fast websites convert better, rank higher, and keep visitors coming back. Here's why performance should be a priority."

@@ -16,10 +16,12 @@ const description =
 <PageLayout
   title={title}
   description={description}
+  image="/og/privacy.png"
   layoutWidth="normal"
   schemaType="WebPage"
   useBackground={true}
 >
+  <!-- CUSTOMIZE: Update effective date -->
   <p class="text-fg-muted mb-8">
     <strong class="text-fg-bold">Effective Date:</strong> January 1, 2026
   </p>
@@ -105,7 +107,8 @@ const description =
           <li class="flex items-start gap-2">
             <span class="text-accent-primary mt-1">•</span>
             <span>
-              <strong class="text-fg-bold">Hosting:</strong> GitHub Pages with HTTPS encryption
+              <!-- CUSTOMIZE: Update with your hosting provider -->
+              <strong class="text-fg-bold">Hosting:</strong> Static hosting with HTTPS encryption
             </span>
           </li>
           <li class="flex items-start gap-2">

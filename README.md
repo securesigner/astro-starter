@@ -2,6 +2,18 @@
 
 A production-ready website template for small businesses, built with Astro 5 and designed to be fast, accessible, and easy to customize.
 
+> **[Live Demo →](https://your-demo-url.netlify.app)** · Replace this link with your deployed preview
+
+![Astro 5](https://img.shields.io/badge/Astro-5-FF5D01?logo=astro&logoColor=white) ![Tailwind CSS v4](https://img.shields.io/badge/Tailwind_CSS-v4-38B2AC?logo=tailwindcss&logoColor=white) ![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)
+
+## Screenshots
+
+<!-- Add your own screenshots here for Gumroad listing -->
+<!-- ![Homepage](docs/screenshots/homepage.png) -->
+<!-- ![Services](docs/screenshots/services.png) -->
+<!-- ![Dark Mode](docs/screenshots/dark-mode.png) -->
+<!-- ![Mobile](docs/screenshots/mobile.png) -->
+
 ## Features
 
 - **Astro 5** with Islands Architecture — static-first with interactive React components where needed
@@ -91,8 +103,22 @@ To change fonts:
 ### 7. Images
 
 - Replace `public/favicon.svg` with your favicon
-- Replace `public/assets/images/og-default.png` with your default social image (1200x630)
+- Replace `public/assets/images/logo.svg` with your logo
+- Replace `public/assets/images/og-default.png` with your default social image (1200×630)
+- Replace `public/assets/images/404-illustration.webp` with your own 404 illustration
 - Blog post images go in `public/assets/images/blog/`
+
+### 8. LICENSE
+
+Open the `LICENSE` file and replace `[year]` and `[Your Name or Company]` with your details.
+
+### 9. Find All Customization Points
+
+Search the codebase for `CUSTOMIZE` to find every spot that's marked for personalization:
+
+```bash
+grep -rn "CUSTOMIZE" src/
+```
 
 ## Project Structure
 
@@ -190,4 +216,4 @@ This template outputs a static site (`dist/` directory). Deploy anywhere:
 
 ## License
 
-MIT
+MIT — see [LICENSE](LICENSE) for details. Update the copyright holder with your name before publishing.

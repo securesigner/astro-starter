@@ -1,6 +1,6 @@
 ---
 title: "Getting Started with Astro"
-date: 2024-01-10
+date: 2026-01-10
 categories: ["tutorials"]
 tags: ["astro", "web-development", "guide"]
 excerpt: "A quick guide to working with your Astro-powered website. Learn the basics of pages, components, and content."
