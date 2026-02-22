@@ -2,12 +2,12 @@
 import { defineConfig } from 'astro/config';
 import react from '@astrojs/react';
 import sitemap, { ChangeFreqEnum } from '@astrojs/sitemap';
+import { SITE } from './src/data/site.ts';
 
 // https://astro.build/config
 export default defineConfig({
-  // CUSTOMIZE: Set your production URL for canonical links and sitemap
-  // NOTE: Also update the `url` field in src/data/site.ts to match
-  site: 'https://yourdomain.com',
+  // URL is imported from src/data/site.ts — the single source of truth
+  site: SITE.url,
 
   outDir: './dist',
 

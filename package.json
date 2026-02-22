@@ -1,6 +1,6 @@
 {
   "name": "small-business-astro-starter",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "license": "MIT",
   "description": "A production-ready Astro 5 starter template for small business websites. Includes React islands, Tailwind CSS v4, content collections, SEO, blog, contact form, and dark mode.",
   "type": "module",

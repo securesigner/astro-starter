@@ -14,7 +14,7 @@ export const SITE = {
   title: 'YOUR BUSINESS NAME',
   description:
     'A brief description of your business and what you do. Update this in src/data/site.ts.',
-  // NOTE: Also update the `site` field in astro.config.mjs to match this URL
+  // This is the single source of truth — astro.config.mjs imports this value
   url: 'https://yourdomain.com',
   author: 'Your Name',
   tagline:
@@ -22,6 +22,8 @@ export const SITE = {
   themeColor: '#047857',
   defaultImage: '/assets/images/og-default.png',
   twitterCard: 'summary_large_image' as const,
+  // CUSTOMIZE: Add your Twitter/X handle (e.g., '@yourbusiness') for twitter:site meta tag
+  twitter: '',
 } as const;
 
 export type SiteConfig = typeof SITE;

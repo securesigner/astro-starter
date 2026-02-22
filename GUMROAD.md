@@ -37,12 +37,14 @@ Most templates look good in a demo but fall apart when you try to customize them
 ## Feature Bullets
 
 **Framework & Performance**
+
 - ⚡ **Astro 5** with Islands Architecture — static HTML with interactive React components only where needed
 - 🎨 **Tailwind CSS v4** with a full design token system (colors, fonts, spacing, shadows)
 - 💯 **Perfect Lighthouse scores** — 100/100 across Performance, Accessibility, Best Practices, and SEO
 - 🚀 **View Transitions** — SPA-like page navigation without client-side routing overhead
 
 **Pages & Content**
+
 - 📝 **Blog** with Markdown content collections, categories, tags, and reading time
 - 🛠️ **3 service pages** — templated with FAQs, process steps, deliverables, and schema.org data
 - 💰 **Pricing page** — 4-tier grid with feature comparison
@@ -51,23 +53,27 @@ Most templates look good in a demo but fall apart when you try to customize them
 - 🔍 **404 page** — custom error page with helpful navigation
 
 **SEO & Social**
+
 - 🖼️ **Dynamic OG images** — auto-generated social cards for every page using Satori
 - 📊 **Schema.org JSON-LD** — Organization, WebSite, ProfessionalService, BlogPosting, FAQPage, and more
 - 🗺️ **Sitemap & RSS feed** — auto-generated with priority hints
 - 🏷️ **Complete meta tags** — Open Graph, Twitter Cards, canonical URLs
 
 **Design & Accessibility**
+
 - 🌙 **Dark mode** — smooth toggle with system preference detection and no flash of unstyled content
 - 📱 **Mobile-first responsive design** — dedicated mobile bottom navigation bar
 - ♿ **WCAG-compliant** — tested with axe-core, proper ARIA labels, keyboard navigation, focus management
 - 🧩 **shadcn/ui components** — Button, Card, Input, Select, Badge, Toast (Radix primitives)
 
 **Developer Experience**
+
 - 🧪 **135+ unit tests** (Vitest) + **80+ E2E tests** (Playwright)
 - 📐 **TypeScript strict mode** with Zod schemas for content validation
 - 🔧 **ESLint + Prettier** configured and ready
 - 🏗️ **GitHub Actions CI** — lint, typecheck, test, and build on every push
 - 🔤 **Self-hosted fonts** — DM Sans, Fraunces, Inter via @fontsource (zero external requests)
+- 💻 **VS Code ready** — recommended extensions, format-on-save, Tailwind IntelliSense out of the box
 - 🏷️ **CUSTOMIZE markers** — `grep -rn "CUSTOMIZE" src/` finds every editable spot
 
 ---
@@ -83,6 +89,7 @@ Most templates look good in a demo but fall apart when you try to customize them
 - **Step-by-step SETUP.md** — getting started guide for non-developers
 - **CHANGELOG.md** — version history
 - **GitHub Actions CI workflow** — automated quality checks
+- **VS Code workspace config** — recommended extensions and editor settings
 
 ---
 
@@ -103,10 +110,10 @@ Use these for the Gumroad gallery (recommended order):
 
 ## Pricing Suggestion
 
-| Tier | Price | Notes |
-|------|-------|-------|
-| Standard | $49 | Template + SETUP guide |
-| Professional | $79 | + 30-min setup call or email support |
+| Tier         | Price | Notes                                |
+| ------------ | ----- | ------------------------------------ |
+| Standard     | $49   | Template + SETUP guide               |
+| Professional | $79   | + 30-min setup call or email support |
 
 ---
 

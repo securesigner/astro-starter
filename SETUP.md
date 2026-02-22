@@ -84,16 +84,17 @@ This is the **single most important file**. Open it and replace all placeholder 
 
 ```typescript
 export const SITE = {
-  title: 'YOUR BUSINESS NAME',     // ← Your company name
-  description: '...',               // ← One sentence about your business
-  url: 'https://yourdomain.com',    // ← Your live website URL
-  author: 'Your Name',              // ← Your name
-  tagline: '...',                   // ← Short tagline or slogan
-  themeColor: '#047857',            // ← Your brand color (hex code)
+  title: 'YOUR BUSINESS NAME', // ← Your company name
+  description: '...', // ← One sentence about your business
+  url: 'https://yourdomain.com', // ← Your live website URL
+  author: 'Your Name', // ← Your name
+  tagline: '...', // ← Short tagline or slogan
+  themeColor: '#047857', // ← Your brand color (hex code)
+  twitter: '@yourbusiness', // ← Your Twitter/X handle (or leave empty)
 };
 ```
 
-> **Important**: Also update the `site` field in `astro.config.mjs` to match your URL.
+> **Note**: The `site` field in `astro.config.mjs` is automatically imported from this file — no need to update it separately.
 
 ### ✅ 2. Navigation Links (`src/data/navigation.ts`)
 
@@ -115,25 +116,25 @@ The contact form uses [Formspree](https://formspree.io) to receive submissions:
 
 Replace the placeholder content in these files:
 
-| What | Where |
-|------|-------|
-| Homepage | `src/pages/index.astro` |
-| About page | `src/pages/about.astro` |
-| Pricing page | `src/pages/pricing.astro` |
-| Privacy policy | `src/pages/privacy.astro` |
-| Blog posts | `src/content/blog/*.md` |
-| Service pages | `src/content/services/*.md` |
+| What           | Where                       |
+| -------------- | --------------------------- |
+| Homepage       | `src/pages/index.astro`     |
+| About page     | `src/pages/about.astro`     |
+| Pricing page   | `src/pages/pricing.astro`   |
+| Privacy policy | `src/pages/privacy.astro`   |
+| Blog posts     | `src/content/blog/*.md`     |
+| Service pages  | `src/content/services/*.md` |
 
 ### ✅ 6. Images
 
 Replace these files with your own:
 
-| Image | Location | Size |
-|-------|----------|------|
-| Favicon | `public/favicon.svg` | Any (SVG preferred) |
-| Logo | `public/assets/images/logo.svg` | ~180×48px |
-| Default social image | `public/assets/images/og-default.png` | 1200×630px |
-| 404 illustration | `public/assets/images/404-illustration.webp` | ~600×400px |
+| Image                | Location                                     | Size                |
+| -------------------- | -------------------------------------------- | ------------------- |
+| Favicon              | `public/favicon.svg`                         | Any (SVG preferred) |
+| Logo                 | `public/assets/images/logo.svg`              | ~180×48px           |
+| Default social image | `public/assets/images/og-default.png`        | 1200×630px          |
+| 404 illustration     | `public/assets/images/404-illustration.webp` | ~600×400px          |
 
 ### ✅ 7. Fonts (optional)
 
@@ -205,14 +206,14 @@ The `dist/` folder is a standard static site. Upload it to any web hosting provi
 
 ## Common Commands
 
-| Command | What It Does |
-|---------|-------------|
-| `npm run dev` | Start local development server |
-| `npm run build` | Build for production |
-| `npm run preview` | Preview production build |
-| `npm run test:unit` | Run unit tests |
-| `npm run test` | Run end-to-end tests |
-| `npm run lint` | Check for code issues |
+| Command             | What It Does                   |
+| ------------------- | ------------------------------ |
+| `npm run dev`       | Start local development server |
+| `npm run build`     | Build for production           |
+| `npm run preview`   | Preview production build       |
+| `npm run test:unit` | Run unit tests                 |
+| `npm run test`      | Run end-to-end tests           |
+| `npm run lint`      | Check for code issues          |
 
 ---
 

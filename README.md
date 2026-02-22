@@ -29,6 +29,7 @@ A production-ready website template for small businesses, built with Astro 5 and
 - **Tests** — Playwright E2E + Vitest unit tests
 - **CI/CD** — GitHub Actions workflow (lint, typecheck, build, test)
 - **Code quality** — ESLint, Prettier, TypeScript strict mode
+- **VS Code ready** — recommended extensions, format-on-save, Tailwind IntelliSense
 
 ## Quick Start
 
@@ -61,7 +62,7 @@ export const SITE = {
 };
 ```
 
-This file is the single source of truth — layouts, feeds, and SEO all read from it.
+This file is the single source of truth — layouts, feeds, SEO, and `astro.config.mjs` all read from it automatically.
 
 ### 2. Navigation
 
@@ -99,6 +100,7 @@ Fonts are self-hosted via `@fontsource` (no external requests):
 - **Inter** — UI elements
 
 To change fonts:
+
 1. Install new `@fontsource` packages
 2. Update imports in `src/layouts/Layout.astro`
 3. Update `--font-sans` / `--font-serif` in `src/styles/global.css`
@@ -156,13 +158,13 @@ src/
 
 ```yaml
 ---
-title: "Post Title"           # Required
-date: 2024-01-15              # Required
-author: "Your Name"           # Optional (defaults to site author)
-categories: ["category"]      # Optional
-tags: ["tag1", "tag2"]        # Optional
-excerpt: "Short description"  # Optional
-draft: false                  # Optional (defaults to false)
+title: 'Post Title' # Required
+date: 2024-01-15 # Required
+author: 'Your Name' # Optional (defaults to site author)
+categories: ['category'] # Optional
+tags: ['tag1', 'tag2'] # Optional
+excerpt: 'Short description' # Optional
+draft: false # Optional (defaults to false)
 ---
 ```
 
@@ -170,29 +172,29 @@ draft: false                  # Optional (defaults to false)
 
 ```yaml
 ---
-title: "Service Name"         # Required
-tagline: "Short description"  # Required
-benefits: []                  # List of benefit strings
-ideal_for: []                 # List of ideal client descriptions
-process: []                   # Steps: { title, description }
-deliverables: []              # Items: { title, description }
-faqs: []                      # Items: { question, answer }
-draft: false                  # Optional
+title: 'Service Name' # Required
+tagline: 'Short description' # Required
+benefits: [] # List of benefit strings
+ideal_for: [] # List of ideal client descriptions
+process: [] # Steps: { title, description }
+deliverables: [] # Items: { title, description }
+faqs: [] # Items: { question, answer }
+draft: false # Optional
 ---
 ```
 
 ## Commands
 
-| Command | Description |
-|---------|-------------|
-| `npm run dev` | Start dev server at localhost:4321 |
-| `npm run build` | Type-check and build for production |
-| `npm run preview` | Preview production build locally |
-| `npm run test` | Run E2E tests (Playwright) |
-| `npm run test:unit` | Run unit tests (Vitest) |
-| `npm run lint` | Check for lint errors |
-| `npm run check` | TypeScript type checking |
-| `npm run verify` | Build + E2E tests |
+| Command             | Description                         |
+| ------------------- | ----------------------------------- |
+| `npm run dev`       | Start dev server at localhost:4321  |
+| `npm run build`     | Type-check and build for production |
+| `npm run preview`   | Preview production build locally    |
+| `npm run test`      | Run E2E tests (Playwright)          |
+| `npm run test:unit` | Run unit tests (Vitest)             |
+| `npm run lint`      | Check for lint errors               |
+| `npm run check`     | TypeScript type checking            |
+| `npm run verify`    | Build + E2E tests                   |
 
 ## Deployment
 
@@ -205,17 +207,17 @@ This template outputs a static site (`dist/` directory). Deploy anywhere:
 
 ## Tech Stack
 
-| Category | Technology |
-|----------|-----------|
-| Framework | Astro 5 |
-| UI | React 19 (islands) |
-| Styling | Tailwind CSS v4 |
-| Components | shadcn/ui (Radix primitives) |
-| Type Safety | TypeScript, Zod |
-| Testing | Playwright, Vitest |
-| Code Quality | ESLint, Prettier |
-| Fonts | @fontsource (self-hosted) |
-| OG Images | Satori + resvg |
+| Category     | Technology                   |
+| ------------ | ---------------------------- |
+| Framework    | Astro 5                      |
+| UI           | React 19 (islands)           |
+| Styling      | Tailwind CSS v4              |
+| Components   | shadcn/ui (Radix primitives) |
+| Type Safety  | TypeScript, Zod              |
+| Testing      | Playwright, Vitest           |
+| Code Quality | ESLint, Prettier             |
+| Fonts        | @fontsource (self-hosted)    |
+| OG Images    | Satori + resvg               |
 
 ## License
 
