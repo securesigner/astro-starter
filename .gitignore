@@ -41,6 +41,9 @@ junit*.xml
 ### Distribution artifacts
 *.zip
 
+### Distribution archives
+*.zip
+
 ### OS & editor
 .DS_Store
 Thumbs.db
